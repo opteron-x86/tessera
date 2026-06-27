@@ -1,6 +1,6 @@
 "use client";
 
-import { Trophy } from "lucide-react";
+import { DoorOpen, RefreshCcw, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { GameState, PlayerSlot } from "@/game/types";
 
@@ -8,11 +8,13 @@ export function OutcomeOverlay({
   game,
   youSlot = "one",
   onPlayAgain,
+  onReturnToLobby,
   reward
 }: {
   game: GameState;
   youSlot?: PlayerSlot;
-  onPlayAgain: () => void;
+  onPlayAgain?: () => void;
+  onReturnToLobby: () => void;
   reward?: number;
 }) {
   if (game.phase !== "complete") {
@@ -39,9 +41,16 @@ export function OutcomeOverlay({
             <p className="mt-1 font-semibold text-gold">+{reward} currency</p>
           ) : null}
         </div>
-        <Button variant="accent" size="lg" onClick={onPlayAgain}>
-          Play again
-        </Button>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          {onPlayAgain && (
+            <Button variant="accent" size="lg" onClick={onPlayAgain}>
+              <RefreshCcw size={17} /> Play again
+            </Button>
+          )}
+          <Button variant="primary" size="lg" onClick={onReturnToLobby}>
+            <DoorOpen size={17} /> Return to lobby
+          </Button>
+        </div>
       </div>
     </div>
   );

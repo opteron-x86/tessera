@@ -1,141 +1,165 @@
 "use client";
 
 import clsx from "clsx";
-import { Layers, Recycle, Search } from "lucide-react";
+import { Layers, Recycle, TriangleAlert } from "lucide-react";
 import { useMemo, useState } from "react";
+import { CardFilterBar } from "@/components/cards/card-filter-bar";
+import {
+  groupAndFilterCards,
+  listAffinities,
+  type CardGroup,
+  type CardSort
+} from "@/components/cards/filter";
 import { CardFace } from "@/components/game/card-face";
 import { ActionBar } from "@/components/ui/action-bar";
 import { Button } from "@/components/ui/button";
-import { EmptyState } from "@/components/ui/feedback";
-import { Input } from "@/components/ui/input";
-import { Panel, PanelHeader } from "@/components/ui/panel";
+import { EmptyState, Skeleton } from "@/components/ui/feedback";
+import { Overlay } from "@/components/ui/overlay";
+import { Badge, Panel } from "@/components/ui/panel";
+import { transmuteValue } from "@/game/transmute";
 import type { CardInstance, CardRarity } from "@/game/types";
 import { formatSides, rarityColor } from "@/lib/client/cards";
 import { useTessera } from "@/lib/client/store";
 
-const RARITIES: Array<CardRarity | "ALL"> = ["ALL", "COMMON", "UNCOMMON", "RARE", "EPIC", "LEGENDARY"];
+type TransmuteInfo = {
+  target: CardInstance | null;
+  value: number;
+  blocked: boolean;
+  isLastCopy: boolean;
+};
 
-type Group = { template: CardInstance["template"]; ids: string[] };
+function transmuteInfo(group: CardGroup, deckIds: Set<string>, enforceDeck: boolean): TransmuteInfo {
+  const candidates = enforceDeck
+    ? group.instances.filter((card) => !deckIds.has(card.id))
+    : group.instances;
+  const target = [...candidates].sort((a, b) => a.upgradeLevel - b.upgradeLevel)[0] ?? null;
+  return {
+    target,
+    value: target ? transmuteValue(group.template.rarity, target.upgradeLevel) : 0,
+    blocked: !target,
+    isLastCopy: group.instances.length === 1
+  };
+}
 
 export function CollectionScreen() {
-  const { ownedCards, transmute } = useTessera();
+  const { ownedCards, transmute, snapshotLoading, status, activeDeckCards } = useTessera();
   const [query, setQuery] = useState("");
   const [rarity, setRarity] = useState<CardRarity | "ALL">("ALL");
+  const [affinity, setAffinity] = useState<string>("ALL");
+  const [sort, setSort] = useState<CardSort>("name");
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
 
-  const groups = useMemo<Group[]>(() => {
-    const q = query.trim().toLowerCase();
-    const map = new Map<string, Group>();
-    for (const card of ownedCards) {
-      if (rarity !== "ALL" && card.template.rarity !== rarity) continue;
-      if (q && !card.template.name.toLowerCase().includes(q)) continue;
-      const group = map.get(card.template.id) ?? { template: card.template, ids: [] };
-      group.ids.push(card.id);
-      map.set(card.template.id, group);
-    }
-    return [...map.values()].sort((a, b) => a.template.name.localeCompare(b.template.name));
-  }, [ownedCards, query, rarity]);
+  const enforceDeck = status === "authenticated";
+  const deckIds = useMemo(() => new Set(activeDeckCards.map((card) => card.id)), [activeDeckCards]);
+  const affinities = useMemo(() => listAffinities(ownedCards), [ownedCards]);
+  const groups = useMemo(
+    () => groupAndFilterCards(ownedCards, { query, rarity, affinity, sort }),
+    [ownedCards, query, rarity, affinity, sort]
+  );
 
   const active = groups.find((group) => group.template.id === activeId) ?? groups[0] ?? null;
+  const confirmGroup = groups.find((group) => group.template.id === confirmId) ?? null;
+  const uniqueCount = useMemo(
+    () => new Set(ownedCards.map((card) => card.template.id)).size,
+    [ownedCards]
+  );
+
+  function select(group: CardGroup) {
+    setActiveId(group.template.id);
+    setSheetOpen(true);
+  }
+
+  function requestTransmute(group: CardGroup | null) {
+    if (group) setConfirmId(group.template.id);
+  }
+
+  function confirmTransmute() {
+    if (!confirmGroup) return;
+    const info = transmuteInfo(confirmGroup, deckIds, enforceDeck);
+    if (info.target) void transmute(info.target.id);
+    setConfirmId(null);
+    setSheetOpen(false);
+  }
 
   return (
     <div className="flex h-full flex-col gap-4">
       <div className="flex items-center justify-between gap-3">
         <h1 className="heading font-display text-2xl font-bold">Collection</h1>
-        <span className="text-sm text-content-muted">{ownedCards.length} owned</span>
+        <span className="text-sm text-content-muted tabular-nums">
+          {uniqueCount} unique · {ownedCards.length} total
+        </span>
       </div>
 
-      <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
-        {/* inventory list */}
-        <Panel flourish className="flex min-h-0 flex-col">
-          <PanelHeader
-            title="Cards"
-            action={
-              <div className="flex items-center gap-2">
-                <div className="relative hidden sm:block">
-                  <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-content-faint" />
-                  <Input
-                    value={query}
-                    onChange={(event) => setQuery(event.target.value)}
-                    placeholder="Filter"
-                    className="h-8 w-40 pl-8 text-sm"
-                  />
-                </div>
-              </div>
-            }
-          />
+      <CardFilterBar
+        query={query}
+        rarity={rarity}
+        affinity={affinity}
+        sort={sort}
+        affinities={affinities}
+        onQuery={setQuery}
+        onRarity={setRarity}
+        onAffinity={setAffinity}
+        onSort={setSort}
+      />
 
-          <div className="flex flex-wrap gap-1.5 border-b border-line px-4 py-2">
-            {RARITIES.map((value) => (
-              <button
-                key={value}
-                onClick={() => setRarity(value)}
-                className={clsx(
-                  "heading border px-2.5 py-1 text-[11px] font-semibold transition-colors",
-                  rarity === value
-                    ? "border-accent bg-accent/15 text-accent"
-                    : "border-transparent text-content-faint hover:text-content"
-                )}
-              >
-                {value}
-              </button>
-            ))}
-          </div>
-
-          {/* column header */}
-          <div className="grid grid-cols-[1fr_5rem_3rem_4rem] gap-2 border-b border-line px-4 py-1.5 text-[11px] uppercase tracking-wide text-content-faint">
-            <span>Name</span>
-            <span>Affinity</span>
-            <span className="text-right">Tier</span>
-            <span className="text-right">Sides</span>
-          </div>
-
-          {groups.length === 0 ? (
-            <EmptyState icon={Layers} title="No cards match" description="Try a different filter or open a pack." />
+      {/* grid + desktop detail */}
+      <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <div className="scroll-thin min-h-0 overflow-y-auto">
+          {snapshotLoading && groups.length === 0 ? (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
+              {Array.from({ length: 8 }).map((_, index) => (
+                <Skeleton key={index} className="aspect-[3/4]" />
+              ))}
+            </div>
+          ) : groups.length === 0 ? (
+            <EmptyState
+              icon={Layers}
+              title="No cards match"
+              description="Try a different filter or open a pack."
+            />
           ) : (
-            <ul className="scroll-thin min-h-0 flex-1 overflow-y-auto">
+            <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
               {groups.map((group) => {
                 const selected = active?.template.id === group.template.id;
+                const count = group.instances.length;
                 return (
                   <li key={group.template.id}>
                     <button
-                      onClick={() => setActiveId(group.template.id)}
-                      className={clsx(
-                        "grid w-full grid-cols-[1fr_5rem_3rem_4rem] items-center gap-2 px-4 py-2 text-left text-sm transition-colors",
-                        selected ? "row-select text-content" : "hover:bg-surface-2"
-                      )}
+                      onClick={() => select(group)}
+                      aria-pressed={selected}
+                      aria-label={`${group.template.name}${count > 1 ? `, ${count} owned` : ""}`}
+                      className="group relative block w-full transition-transform duration-fast hover:-translate-y-0.5"
                     >
-                      <span className="flex min-w-0 items-center gap-2.5">
-                        <img
-                          src={group.template.artUrl ?? "/cards/card-back.svg"}
-                          alt=""
-                          className="h-6 w-6 shrink-0 rounded-sm object-cover"
-                          style={{ filter: "drop-shadow(0 1px 1px rgba(0,0,0,0.6))" }}
-                        />
-                        <span className="truncate font-medium">
-                          {group.template.name}
-                          {group.ids.length > 1 && (
-                            <span className="text-content-muted"> ({group.ids.length})</span>
-                          )}
-                        </span>
-                      </span>
-                      <span className="text-content-muted">{group.template.affinity ?? "—"}</span>
-                      <span className="text-right tabular-nums text-content-muted">{group.template.tier}</span>
-                      <span className="text-right tabular-nums text-content-muted">
-                        {formatSides(group.template.sides)}
-                      </span>
+                      <CardFace
+                        card={group.template}
+                        variant="hand"
+                        selected={selected}
+                        className="w-full"
+                      />
+                      {count > 1 && (
+                        <Badge className="absolute right-1.5 top-1.5 border-line-strong bg-surface/85 tabular-nums backdrop-blur-sm">
+                          ×{count}
+                        </Badge>
+                      )}
                     </button>
                   </li>
                 );
               })}
             </ul>
           )}
-        </Panel>
+        </div>
 
-        {/* detail name-plate */}
+        {/* desktop detail panel */}
         <Panel flourish className="hidden flex-col lg:flex">
           {active ? (
-            <CardDetail key={active.template.id} group={active} onTransmute={() => transmute(active.ids[0]!)} />
+            <CardDetail
+              key={active.template.id}
+              group={active}
+              info={transmuteInfo(active, deckIds, enforceDeck)}
+              onTransmute={() => requestTransmute(active)}
+            />
           ) : (
             <div className="grid flex-1 place-items-center p-6 text-center text-sm text-content-faint">
               Select a card to inspect it.
@@ -145,28 +169,65 @@ export function CollectionScreen() {
       </div>
 
       <ActionBar
-        className="border-t border-line pt-3"
+        className="hidden border-t border-line pt-3 lg:flex"
         actions={[
           {
             keys: ["E"],
             label: "Transmute",
-            onClick: active ? () => transmute(active.ids[0]!) : undefined
-          },
-          { keys: ["F"], label: "Filter" }
+            onClick: active ? () => requestTransmute(active) : undefined
+          }
         ]}
       />
+
+      {/* mobile detail sheet */}
+      <div className="lg:hidden">
+        <Overlay open={sheetOpen} onClose={() => setSheetOpen(false)} title={active?.template.name}>
+          {active && (
+            <CardDetail
+              group={active}
+              info={transmuteInfo(active, deckIds, enforceDeck)}
+              onTransmute={() => requestTransmute(active)}
+              embedded
+            />
+          )}
+        </Overlay>
+      </div>
+
+      {/* transmute confirmation */}
+      <Overlay open={Boolean(confirmGroup)} onClose={() => setConfirmId(null)} title="Transmute card?">
+        {confirmGroup && (
+          <ConfirmTransmute
+            group={confirmGroup}
+            info={transmuteInfo(confirmGroup, deckIds, enforceDeck)}
+            onCancel={() => setConfirmId(null)}
+            onConfirm={confirmTransmute}
+          />
+        )}
+      </Overlay>
     </div>
   );
 }
 
-function CardDetail({ group, onTransmute }: { group: Group; onTransmute: () => void }) {
+function CardDetail({
+  group,
+  info,
+  onTransmute,
+  embedded = false
+}: {
+  group: CardGroup;
+  info: TransmuteInfo;
+  onTransmute: () => void;
+  embedded?: boolean;
+}) {
   const { template } = group;
   return (
     <>
-      <div className="plate px-4 py-2.5">
-        <h2 className="heading font-display text-lg font-semibold">{template.name}</h2>
-      </div>
-      <div className="flex flex-1 flex-col gap-4 p-4">
+      {!embedded && (
+        <div className="plate px-4 py-2.5">
+          <h2 className="heading font-display text-lg font-semibold">{template.name}</h2>
+        </div>
+      )}
+      <div className={clsx("flex flex-1 flex-col gap-4", embedded ? "" : "p-4")}>
         <div className="mx-auto w-32">
           <CardFace card={template} variant="hand" />
         </div>
@@ -176,14 +237,68 @@ function CardDetail({ group, onTransmute }: { group: Group; onTransmute: () => v
           <Stat label="Tier" value={String(template.tier)} />
           <Stat label="Series" value={template.series} />
           <Stat label="Sides" value={formatSides(template.sides)} />
-          <Stat label="Owned" value={String(group.ids.length)} />
+          <Stat label="Owned" value={String(group.instances.length)} />
         </div>
         <p className="flex-1 text-sm italic leading-relaxed text-content-muted">{template.lore}</p>
-        <Button variant="accent" onClick={onTransmute}>
+        {info.blocked ? (
+          <p className="flex items-center gap-2 rounded-md border border-line bg-surface-2 px-3 py-2.5 text-sm text-content-muted">
+            <TriangleAlert size={15} className="shrink-0 text-warning" />
+            {info.isLastCopy
+              ? "In your active deck — cannot transmute."
+              : "All copies are in your active deck."}
+          </p>
+        ) : (
+          <Button variant="accent" onClick={onTransmute}>
+            <Recycle size={16} /> Transmute · +{info.value}
+          </Button>
+        )}
+      </div>
+    </>
+  );
+}
+
+function ConfirmTransmute({
+  group,
+  info,
+  onCancel,
+  onConfirm
+}: {
+  group: CardGroup;
+  info: TransmuteInfo;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <div className="flex flex-col gap-4">
+      {info.blocked ? (
+        <p className="text-sm text-content-muted">
+          Every copy of <span className="font-semibold text-content">{group.template.name}</span> is
+          in your active deck. Remove it from the deck first to transmute it.
+        </p>
+      ) : (
+        <>
+          <p className="text-sm text-content-muted">
+            Transmute one copy of{" "}
+            <span className="font-semibold text-content">{group.template.name}</span> for{" "}
+            <span className="font-semibold text-gold">+{info.value} currency</span>? This permanently
+            destroys the card.
+          </p>
+          {info.isLastCopy && (
+            <p className="flex items-center gap-2 text-sm text-warning">
+              <TriangleAlert size={15} className="shrink-0" /> This is your last copy.
+            </p>
+          )}
+        </>
+      )}
+      <div className="flex justify-end gap-2">
+        <Button variant="ghost" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button variant="accent" onClick={onConfirm} disabled={info.blocked}>
           <Recycle size={16} /> Transmute
         </Button>
       </div>
-    </>
+    </div>
   );
 }
 

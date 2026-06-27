@@ -110,8 +110,14 @@ function useStoreValue() {
 
   // Selection shared by duel / deck builder
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
-  const [selectedDeckCards, setSelectedDeckCards] = useState<string[]>([]);
   const [openedCards, setOpenedCards] = useState<CardTemplate[]>([]);
+
+  // Deck builder: which saved deck is active (used by PvE) and which is being edited
+  const [selectedDeckCards, setSelectedDeckCards] = useState<string[]>([]);
+  const [activeDeckId, setActiveDeckId] = useState<string | null>(null);
+  const [editingDeckId, setEditingDeckId] = useState<string | null>(null);
+  const [deckDraftName, setDeckDraftName] = useState("First Road");
+  const deckSeededRef = useRef(false);
 
   // Duel mode — which surface launched the active duel (drives the /play/duel screen)
   const [duelMode, setDuelMode] = useState<"pve" | "pvp">("pve");
@@ -151,12 +157,16 @@ function useStoreValue() {
   const [pvpSlot, setPvpSlot] = useState<PlayerSlot | null>(null);
   const [pvpState, setPvpState] = useState<GameState | null>(null);
   const socketRef = useRef<Socket | null>(null);
+  const roomIdRef = useRef("");
+  const pvpStateRef = useRef<GameState | null>(null);
 
   const ownedCardsRaw: SnapshotCard[] = snapshot?.cards ?? localOneDeck.cards;
   const ownedCards = useMemo(() => ownedCardsRaw.map(toCardInstance), [ownedCardsRaw]);
+  const decks = useMemo(() => snapshot?.decks ?? [], [snapshot]);
+  const activeDeck = decks.find((deck) => deck.id === activeDeckId) ?? decks[0];
   const activeDeckCards: CardInstance[] = useMemo(
-    () => snapshot?.decks[0]?.cards.map((slot) => toCardInstance(slot.card)) ?? localOneDeck.cards,
-    [snapshot, localOneDeck]
+    () => activeDeck?.cards.map((slot) => toCardInstance(slot.card)) ?? localOneDeck.cards,
+    [activeDeck, localOneDeck]
   );
   const playerCurrency = snapshot?.profile.currency ?? 500;
   const deckSlots = snapshot?.profile.deckSlots ?? 3;
@@ -209,11 +219,22 @@ function useStoreValue() {
     }
   }, [status, refreshSnapshot]);
 
+  // Seed the builder from the first saved deck once, so later snapshot refreshes
+  // (pack opens, transmutes, saves) don't stomp an in-progress edit.
   useEffect(() => {
-    if (snapshot?.decks[0]) {
-      setSelectedDeckCards(snapshot.decks[0].cards.map((slot) => slot.card.id));
+    const first = snapshot?.decks[0];
+    if (!deckSeededRef.current && first) {
+      deckSeededRef.current = true;
+      setActiveDeckId(first.id);
+      setEditingDeckId(first.id);
+      setDeckDraftName(first.name);
+      setSelectedDeckCards(first.cards.map((slot) => slot.card.id));
     }
   }, [snapshot]);
+
+  useEffect(() => {
+    roomIdRef.current = roomId;
+  }, [roomId]);
 
   const resetLocalGame = useCallback(
     async (nextOpponentId = opponentId) => {
@@ -359,6 +380,27 @@ function useStoreValue() {
     );
   }, []);
 
+  const clearDeck = useCallback(() => setSelectedDeckCards([]), []);
+
+  const editDeck = useCallback(
+    (deckId: string) => {
+      const deck = decks.find((entry) => entry.id === deckId);
+      if (!deck) {
+        return;
+      }
+      setEditingDeckId(deck.id);
+      setDeckDraftName(deck.name);
+      setSelectedDeckCards(deck.cards.map((slot) => slot.card.id));
+    },
+    [decks]
+  );
+
+  const newDeck = useCallback(() => {
+    setEditingDeckId(null);
+    setDeckDraftName("New Deck");
+    setSelectedDeckCards([]);
+  }, []);
+
   const saveCurrentDeck = useCallback(async () => {
     if (selectedDeckCards.length !== 5) {
       notify("A deck needs exactly five cards.", "danger");
@@ -366,16 +408,24 @@ function useStoreValue() {
     }
     try {
       const next = await saveDeck({
-        deckId: snapshot?.decks[0]?.id,
-        name: snapshot?.decks[0]?.name ?? "First Road",
+        deckId: editingDeckId ?? undefined,
+        name: deckDraftName.trim() || "New Deck",
         cardIds: selectedDeckCards
       });
       setSnapshot(next);
+      // A create returns no id, but new decks sort last (createdAt asc); updates keep theirs.
+      const saved = editingDeckId
+        ? next.decks.find((deck) => deck.id === editingDeckId)
+        : next.decks[next.decks.length - 1];
+      if (saved) {
+        setEditingDeckId(saved.id);
+        setActiveDeckId((current) => current ?? saved.id);
+      }
       notify("Deck saved.", "success");
     } catch (error) {
       notify(error instanceof Error ? error.message : "Deck save failed.", "danger");
     }
-  }, [selectedDeckCards, snapshot, notify]);
+  }, [selectedDeckCards, editingDeckId, deckDraftName, notify]);
 
   const openPack = useCallback(
     async (packId: string) => {
@@ -417,16 +467,79 @@ function useStoreValue() {
 
   const logout = useCallback(() => signOut({ redirect: false }), []);
 
+  const clearPvpSession = useCallback(() => {
+    roomIdRef.current = "";
+    pvpStateRef.current = null;
+    setSelectedCardId(null);
+    setRoomId("");
+    setJoinCode("");
+    setPvpSlot(null);
+    setPvpState(null);
+  }, []);
+
+  const markPvpRoomClosed = useCallback(() => {
+    const finalState = pvpStateRef.current;
+    roomIdRef.current = "";
+    setSelectedCardId(null);
+    setRoomId("");
+    setJoinCode("");
+
+    if (finalState?.phase !== "complete") {
+      clearPvpSession();
+      setDuelMode("pve");
+    }
+  }, [clearPvpSession]);
+
+  const closeLocalDuelSession = useCallback(() => {
+    aiTurnSeq.current += 1;
+    setSelectedCardId(null);
+    setPveMatchId(null);
+    setLastPveReward(null);
+    setGame((current) => ({ ...current, phase: "lobby" }));
+  }, []);
+
   const getSocket = useCallback(() => {
     if (!socketRef.current) {
       socketRef.current = io({ path: "/socket.io" });
       socketRef.current.on("pvp:room", (payload: { roomId: string; state: GameState | null }) => {
+        roomIdRef.current = payload.roomId;
+        pvpStateRef.current = payload.state;
         setRoomId(payload.roomId);
         setPvpState(payload.state);
       });
+      socketRef.current.on("pvp:closed", (payload: { roomId?: string }) => {
+        if (!payload.roomId || payload.roomId === roomIdRef.current) {
+          closeLocalDuelSession();
+          markPvpRoomClosed();
+        }
+      });
     }
     return socketRef.current;
-  }, []);
+  }, [closeLocalDuelSession, markPvpRoomClosed]);
+
+  const closePvpSession = useCallback(() => {
+    const activeRoomId = roomId;
+    const socket = socketRef.current;
+    clearPvpSession();
+
+    if (!activeRoomId || !socket) {
+      return;
+    }
+
+    void emitWithAck(socket, "pvp:close", { roomId: activeRoomId }).then((ack) => {
+      if (!ack.ok) {
+        notify(ack.error ?? "Room close failed.", "danger");
+      }
+    });
+  }, [clearPvpSession, notify, roomId]);
+
+  const closeDuelSession = useCallback(() => {
+    closeLocalDuelSession();
+    if (roomId || pvpState) {
+      closePvpSession();
+    }
+    setDuelMode("pve");
+  }, [closeLocalDuelSession, closePvpSession, pvpState, roomId]);
 
   const createPvpRoom = useCallback(async () => {
     const ack = await emitWithAck(getSocket(), "pvp:create", {
@@ -437,8 +550,11 @@ function useStoreValue() {
       notify(ack.error ?? "Room creation failed.", "danger");
       return;
     }
+    roomIdRef.current = ack.roomId ?? "";
+    pvpStateRef.current = null;
     setRoomId(ack.roomId ?? "");
     setPvpSlot(ack.slot ?? "one");
+    setPvpState(null);
     notify(`Room ${ack.roomId} created.`, "success");
   }, [getSocket, session, loginName, notify]);
 
@@ -452,6 +568,8 @@ function useStoreValue() {
       notify(ack.error ?? "Join failed.", "danger");
       return;
     }
+    roomIdRef.current = ack.roomId ?? "";
+    pvpStateRef.current = ack.state ?? null;
     setRoomId(ack.roomId ?? "");
     setPvpSlot(ack.slot ?? "two");
     setPvpState(ack.state ?? null);
@@ -476,6 +594,7 @@ function useStoreValue() {
         return;
       }
       setSelectedCardId(null);
+      pvpStateRef.current = ack.state ?? null;
       setPvpState(ack.state ?? null);
     },
     [pvpState, pvpSlot, selectedCardId, getSocket, roomId, notify]
@@ -506,7 +625,16 @@ function useStoreValue() {
     setSelectedCardId,
     selectedDeckCards,
     toggleDeckCard,
+    clearDeck,
     saveCurrentDeck,
+    decks,
+    activeDeckId,
+    setActiveDeckId,
+    editingDeckId,
+    editDeck,
+    newDeck,
+    deckDraftName,
+    setDeckDraftName,
     openedCards,
     openPack,
     transmute,
@@ -525,7 +653,8 @@ function useStoreValue() {
     pvpState,
     createPvpRoom,
     joinPvpRoom,
-    playPvp
+    playPvp,
+    closeDuelSession
   };
 }
 

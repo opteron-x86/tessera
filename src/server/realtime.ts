@@ -5,6 +5,8 @@ import { STARTER_CARD_IDS, SAME_PLUS_RULES, makeDeck } from "../game/content";
 import { applyCommand, createGame } from "../game/engine";
 import type { Deck, GameState, MatchCommand, PlayerSlot } from "../game/types";
 import { prisma } from "../lib/db";
+import { ensurePlayerBootstrap } from "../lib/economy";
+import { toGameDeck } from "../lib/mappers";
 
 type RoomPlayer = {
   socketId: string;
@@ -51,7 +53,7 @@ export function registerRealtimeServer(server: HttpServer) {
                 userId,
                 name: payload.name ?? "Host",
                 slot: "one",
-                deck: makeDeck(`${roomId}-one`, userId, "Host Deck", STARTER_CARD_IDS)
+                deck: await loadPlayerDeck(userId, `${roomId}-one`, "Host Deck")
               }
             },
             state: null
@@ -88,7 +90,7 @@ export function registerRealtimeServer(server: HttpServer) {
             userId,
             name: payload.name ?? "Challenger",
             slot: "two",
-            deck: makeDeck(`${room.id}-two`, userId, "Challenger Deck", STARTER_CARD_IDS)
+            deck: await loadPlayerDeck(userId, `${room.id}-two`, "Challenger Deck")
           };
           room.state = createGame({
             id: room.matchId,
@@ -133,6 +135,9 @@ export function registerRealtimeServer(server: HttpServer) {
           await persistRoom(room);
           reply({ ok: true, state: room.state });
           emitRoom(io, room);
+          if (room.state.phase === "complete") {
+            closeRoom(io, room);
+          }
         } catch (error) {
           reply({ ok: false, error: errorMessage(error) });
         }
@@ -163,6 +168,30 @@ export function registerRealtimeServer(server: HttpServer) {
           await persistRoom(room);
           reply({ ok: true, state: room.state });
           emitRoom(io, room);
+          closeRoom(io, room);
+        } catch (error) {
+          reply({ ok: false, error: errorMessage(error) });
+        }
+      }
+    );
+
+    socket.on(
+      "pvp:close",
+      async (payload: { roomId?: string }, reply: (response: unknown) => void) => {
+        try {
+          const room = rooms.get(normalizeRoomId(payload.roomId));
+          if (!room) {
+            reply({ ok: true });
+            return;
+          }
+
+          const player = playerForSocket(room, socket.id);
+          if (!player) {
+            throw new Error("Only a room player can close the room.");
+          }
+
+          closeRoom(io, room);
+          reply({ ok: true });
         } catch (error) {
           reply({ ok: false, error: errorMessage(error) });
         }
@@ -199,6 +228,47 @@ function emitRoom(io: Server, room: DuelRoom) {
     },
     state: room.state
   });
+}
+
+function closeRoom(io: Server, room: DuelRoom) {
+  rooms.delete(room.id);
+  io.to(room.id).emit("pvp:closed", { roomId: room.id });
+  io.in(room.id).socketsLeave(room.id);
+}
+
+async function loadPlayerDeck(userId: string, fallbackId: string, fallbackName: string): Promise<Deck> {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true }
+  });
+
+  if (!user) {
+    return makeDeck(fallbackId, userId, fallbackName, STARTER_CARD_IDS);
+  }
+
+  await ensurePlayerBootstrap(userId);
+  const deck = await prisma.deck.findFirst({
+    where: { ownerId: userId },
+    include: {
+      cards: {
+        include: {
+          card: {
+            include: {
+              template: true
+            }
+          }
+        },
+        orderBy: { position: "asc" }
+      }
+    },
+    orderBy: [{ isActive: "desc" }, { createdAt: "asc" }]
+  });
+
+  if (!deck) {
+    throw new Error("Save a deck before starting a PvP match.");
+  }
+
+  return toGameDeck(deck);
 }
 
 async function persistRoom(room: DuelRoom) {

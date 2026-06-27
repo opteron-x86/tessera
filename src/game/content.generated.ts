@@ -140,7 +140,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     "collectorNumber": "CORE-007",
     "rarity": "COMMON",
     "tier": 1,
-    "affinity": "Eldritch",
+    "affinity": "Beast",
     "sides": {
       "top": 2,
       "right": 1,
@@ -287,6 +287,28 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     },
     "series": "core",
     "artUrl": "/cards/core/cutthroat.png"
+  },
+  {
+    "id": "natari-erudite",
+    "name": "Natari Erudite",
+    "collectorNumber": "CORE-011",
+    "rarity": "COMMON",
+    "tier": 1,
+    "affinity": "Kynathi",
+    "sides": {
+      "top": 4,
+      "right": 5,
+      "bottom": 1,
+      "left": 1
+    },
+    "lore": "A ruler whose shadow moves half a breath before the body.",
+    "palette": {
+      "primary": "#29223d",
+      "secondary": "#bfa3ff",
+      "ink": "#0d0a14"
+    },
+    "series": "core",
+    "artUrl": "/cards/core/natari-erudite.png"
   },
   {
     "id": "ghuler",
@@ -448,7 +470,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     "collectorNumber": "CORE-018",
     "rarity": "COMMON",
     "tier": 2,
-    "affinity": "Undead",
+    "affinity": "Eldritch",
     "sides": {
       "top": 1,
       "right": 5,
@@ -470,7 +492,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     "collectorNumber": "CORE-018",
     "rarity": "COMMON",
     "tier": 2,
-    "affinity": "Undead",
+    "affinity": "Eldritch",
     "sides": {
       "top": 5,
       "right": 2,
@@ -485,6 +507,50 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     },
     "series": "core",
     "artUrl": "/cards/core/blue-imp.png"
+  },
+  {
+    "id": "skraal",
+    "name": "Skraal",
+    "collectorNumber": "CORE-018",
+    "rarity": "COMMON",
+    "tier": 2,
+    "affinity": "Aberration",
+    "sides": {
+      "top": 4,
+      "right": 4,
+      "bottom": 5,
+      "left": 2
+    },
+    "lore": "Its wings ring like bells before a clean strike.",
+    "palette": {
+      "primary": "#4f8fa8",
+      "secondary": "#d7f0f4",
+      "ink": "#10242b"
+    },
+    "series": "core",
+    "artUrl": "/cards/core/skraal.png"
+  },
+  {
+    "id": "broken-doll",
+    "name": "Broken Doll",
+    "collectorNumber": "CORE-018",
+    "rarity": "COMMON",
+    "tier": 2,
+    "affinity": "Construct",
+    "sides": {
+      "top": 5,
+      "right": 2,
+      "bottom": 5,
+      "left": 3
+    },
+    "lore": "Its wings ring like bells before a clean strike.",
+    "palette": {
+      "primary": "#4f8fa8",
+      "secondary": "#d7f0f4",
+      "ink": "#10242b"
+    },
+    "series": "core",
+    "artUrl": "/cards/core/broken-doll.png"
   },
   {
     "id": "siguapa",

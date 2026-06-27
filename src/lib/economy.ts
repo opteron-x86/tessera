@@ -7,18 +7,11 @@ import {
   getCardsByRarity
 } from "../game/content";
 import { chooseWeighted, createRng } from "../game/rng";
+import { transmuteValue } from "../game/transmute";
 import type { CardRarity, GameState } from "../game/types";
 import { prisma } from "./db";
 
 type Db = PrismaClient | Prisma.TransactionClient;
-
-const RARITY_TRANSMUTE_VALUE: Record<CardRarity, number> = {
-  COMMON: 25,
-  UNCOMMON: 60,
-  RARE: 140,
-  EPIC: 360,
-  LEGENDARY: 900
-};
 
 const RARITY_WEIGHTS: Record<CardRarity, number> = {
   COMMON: 100,
@@ -413,7 +406,7 @@ export async function transmuteCard(userId: string, cardId: string) {
       throw new Error("Cards in decks or locked cards cannot be transmuted.");
     }
 
-    const amount = RARITY_TRANSMUTE_VALUE[card.template.rarity as CardRarity] + card.upgradeLevel * 20;
+    const amount = transmuteValue(card.template.rarity as CardRarity, card.upgradeLevel);
 
     await tx.cardInstance.delete({ where: { id: card.id } });
     await tx.playerProfile.update({

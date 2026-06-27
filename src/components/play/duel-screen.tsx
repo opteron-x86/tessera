@@ -24,7 +24,7 @@ export function DuelScreen() {
   const [openingFlipVisible, setOpeningFlipVisible] = useState(false);
   const [outcomeVisible, setOutcomeVisible] = useState(false);
 
-  const usingPvp = store.duelMode === "pvp" && Boolean(store.pvpState);
+  const usingPvp = Boolean(store.pvpState);
   const game = usingPvp ? store.pvpState! : store.game;
   const youSlot: PlayerSlot = usingPvp && store.pvpSlot ? store.pvpSlot : "one";
   const oppSlot: PlayerSlot = youSlot === "one" ? "two" : "one";
@@ -81,8 +81,14 @@ export function DuelScreen() {
     return null;
   }
 
+  function returnToLobby() {
+    store.closeDuelSession();
+    router.push(usingPvp ? "/play/pvp" : "/play/pve");
+  }
+
   function leaveGame() {
     setLeaveOpen(false);
+    store.closeDuelSession();
     router.push("/play");
   }
 
@@ -90,7 +96,7 @@ export function DuelScreen() {
     if (game.phase === "active") {
       setLeaveOpen(true);
     } else {
-      leaveGame();
+      returnToLobby();
     }
   }
 
@@ -107,13 +113,8 @@ export function DuelScreen() {
           game={game}
           youSlot={youSlot}
           reward={usingPvp ? undefined : reward}
-          onPlayAgain={() => {
-            if (usingPvp) {
-              router.push("/play/pvp");
-            } else {
-              void store.resetLocalGame();
-            }
-          }}
+          onPlayAgain={usingPvp ? undefined : () => void store.resetLocalGame()}
+          onReturnToLobby={returnToLobby}
         />
       )}
       {openingFlipVisible && <OpeningFlipOverlay game={game} youSlot={youSlot} />}

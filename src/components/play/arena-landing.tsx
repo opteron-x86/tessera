@@ -42,11 +42,11 @@ function ModeCard({
 }
 
 export function ArenaLanding() {
-  const { game, pvpState, duelMode, opponentId, playerCurrency } = useTessera();
+  const { game, pvpState, opponentId, playerCurrency } = useTessera();
 
-  const pveLive = game.phase !== "lobby";
-  const pvpLive = Boolean(pvpState);
-  const resumeMode: "pve" | "pvp" | null = pvpLive && duelMode === "pvp" ? "pvp" : pveLive ? "pve" : null;
+  const pveLive = game.phase === "active";
+  const pvpLive = pvpState?.phase === "active";
+  const resumeMode: "pve" | "pvp" | null = pvpLive ? "pvp" : pveLive ? "pve" : null;
   const opponentName =
     PVE_OPPONENTS.find((opponent) => opponent.id === opponentId)?.name ?? "your opponent";
 
