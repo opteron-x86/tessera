@@ -15,7 +15,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 1,
       "left": 4
     },
-    "lore": "A courier sworn to carry living coals between border keeps.",
+    "lore": "It ferries living coals between keeps that no longer agree on the border.",
     "palette": {
       "primary": "#b64b39",
       "secondary": "#f4b66b",
@@ -37,11 +37,11 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 5,
       "left": 1
     },
-    "lore": "Her mirror-water shows only choices already half made.",
+    "lore": "The old road keeps its distance when her pack begins to sing.",
     "palette": {
-      "primary": "#297b73",
-      "secondary": "#83c7bb",
-      "ink": "#10201f"
+      "primary": "#3f4f55",
+      "secondary": "#b8c7c9",
+      "ink": "#11181a"
     },
     "series": "core",
     "artUrl": "/cards/core/dire-wolf.png"
@@ -59,7 +59,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 1,
       "left": 2
     },
-    "lore": "A patient guard whose oath is carved deeper than steel.",
+    "lore": "Hunters mark its trail by the trees it refuses to walk around.",
     "palette": {
       "primary": "#66717a",
       "secondary": "#d1c5ad",
@@ -70,7 +70,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
   },
   {
     "id": "homonculus",
-    "name": "Homonculus",
+    "name": "Homunculus",
     "collectorNumber": "CORE-004",
     "rarity": "COMMON",
     "tier": 1,
@@ -81,11 +81,11 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 3,
       "left": 5
     },
-    "lore": "Every verse leaves a green hook in the listener's heart.",
+    "lore": "It repeats the last order of a master whose name wore off its tongue.",
     "palette": {
-      "primary": "#557a3b",
-      "secondary": "#c9d88f",
-      "ink": "#172112"
+      "primary": "#5f6f78",
+      "secondary": "#c7d2d8",
+      "ink": "#151b1f"
     },
     "series": "core",
     "artUrl": "/cards/core/homonculus.png"
@@ -103,11 +103,11 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 1,
       "left": 1
     },
-    "lore": "Its wings ring like bells before a clean strike.",
+    "lore": "Its wings ring like glass just before the fever takes hold.",
     "palette": {
-      "primary": "#4f8fa8",
-      "secondary": "#d7f0f4",
-      "ink": "#10242b"
+      "primary": "#7f3f45",
+      "secondary": "#f0a05d",
+      "ink": "#211113"
     },
     "series": "core",
     "artUrl": "/cards/core/adze.png"
@@ -125,7 +125,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 4,
       "left": 1
     },
-    "lore": "He taxes smoke, ash, and every spark that escapes a hearth.",
+    "lore": "One egg can feed a village or ransom it through winter.",
     "palette": {
       "primary": "#87362e",
       "secondary": "#d99450",
@@ -147,7 +147,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 4,
       "left": 4
     },
-    "lore": "She descends with empty hands and returns carrying lost names.",
+    "lore": "She knots moonlit grass around the names of those who stray.",
     "palette": {
       "primary": "#315c95",
       "secondary": "#bad7ff",
@@ -169,7 +169,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 4,
       "left": 3
     },
-    "lore": "A forest sovereign that remembers the first road.",
+    "lore": "The grave gave him back because the debt was older than death.",
     "palette": {
       "primary": "#49642e",
       "secondary": "#d7c16f",
@@ -191,11 +191,11 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 2,
       "left": 6
     },
-    "lore": "He maps the invisible roads between vows, storms, and stars.",
+    "lore": "He rattles toward any bell that sounds like his own funeral.",
     "palette": {
-      "primary": "#4f5d8f",
-      "secondary": "#d9c6ff",
-      "ink": "#181827"
+      "primary": "#6f6658",
+      "secondary": "#e2d3ac",
+      "ink": "#1d1a16"
     },
     "series": "core",
     "artUrl": "/cards/core/brittle-skeleton.png"
@@ -206,18 +206,18 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     "collectorNumber": "CORE-010",
     "rarity": "COMMON",
     "tier": 1,
-    "affinity": "Eldritch",
+    "affinity": "Aberration",
     "sides": {
       "top": 3,
       "right": 5,
       "bottom": 2,
       "left": 1
     },
-    "lore": "A ruler whose shadow moves half a breath before the body.",
+    "lore": "Its tears melt footprints into maps no sane hunter follows.",
     "palette": {
-      "primary": "#29223d",
-      "secondary": "#bfa3ff",
-      "ink": "#0d0a14"
+      "primary": "#4d3358",
+      "secondary": "#d8a7cf",
+      "ink": "#160f19"
     },
     "series": "core",
     "artUrl": "/cards/core/squonk.png"
@@ -235,11 +235,11 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 1,
       "left": 5
     },
-    "lore": "A ruler whose shadow moves half a breath before the body.",
+    "lore": "He sells the lock and keeps the key for whatever wakes beneath it.",
     "palette": {
-      "primary": "#29223d",
-      "secondary": "#bfa3ff",
-      "ink": "#0d0a14"
+      "primary": "#6b5232",
+      "secondary": "#d9bd75",
+      "ink": "#1f170e"
     },
     "series": "core",
     "artUrl": "/cards/core/relic-hunter.png"
@@ -247,21 +247,21 @@ export const CARD_TEMPLATES: CardTemplate[] = [
   {
     "id": "plague-rat",
     "name": "Plague Rat",
-    "collectorNumber": "CORE-011",
+    "collectorNumber": "CORE-012",
     "rarity": "COMMON",
     "tier": 1,
-    "affinity": "Beast",
+    "affinity": "Aberration",
     "sides": {
       "top": 4,
       "right": 2,
       "bottom": 4,
       "left": 2
     },
-    "lore": "A ruler whose shadow moves half a breath before the body.",
+    "lore": "The fifth bite remembers the first city that burned for it.",
     "palette": {
-      "primary": "#29223d",
-      "secondary": "#bfa3ff",
-      "ink": "#0d0a14"
+      "primary": "#3d5b3a",
+      "secondary": "#bccb6b",
+      "ink": "#111a10"
     },
     "series": "core",
     "artUrl": "/cards/core/plague-rat.png"
@@ -269,7 +269,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
   {
     "id": "cutthroat",
     "name": "Cutthroat",
-    "collectorNumber": "CORE-011",
+    "collectorNumber": "CORE-013",
     "rarity": "COMMON",
     "tier": 1,
     "affinity": "Human",
@@ -279,11 +279,11 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 4,
       "left": 3
     },
-    "lore": "A ruler whose shadow moves half a breath before the body.",
+    "lore": "No contract survives the alley where she sharpens her smile.",
     "palette": {
-      "primary": "#29223d",
-      "secondary": "#bfa3ff",
-      "ink": "#0d0a14"
+      "primary": "#5a2e36",
+      "secondary": "#d1836f",
+      "ink": "#1c0f12"
     },
     "series": "core",
     "artUrl": "/cards/core/cutthroat.png"
@@ -291,7 +291,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
   {
     "id": "natari-erudite",
     "name": "Natari Erudite",
-    "collectorNumber": "CORE-011",
+    "collectorNumber": "CORE-014",
     "rarity": "COMMON",
     "tier": 1,
     "affinity": "Kynathi",
@@ -301,11 +301,11 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 1,
       "left": 1
     },
-    "lore": "A ruler whose shadow moves half a breath before the body.",
+    "lore": "He annotates forbidden histories in inks that fade from lesser minds.",
     "palette": {
-      "primary": "#29223d",
-      "secondary": "#bfa3ff",
-      "ink": "#0d0a14"
+      "primary": "#40325f",
+      "secondary": "#c8b6ff",
+      "ink": "#151020"
     },
     "series": "core",
     "artUrl": "/cards/core/natari-erudite.png"
@@ -313,7 +313,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
   {
     "id": "ghuler",
     "name": "Ghuler",
-    "collectorNumber": "CORE-012",
+    "collectorNumber": "CORE-015",
     "rarity": "UNCOMMON",
     "tier": 1,
     "affinity": "Eldritch",
@@ -323,11 +323,11 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 5,
       "left": 5
     },
-    "lore": "Its wings ring like bells before a clean strike.",
+    "lore": "It gnaws through prayers first so the bones have nowhere to hide.",
     "palette": {
-      "primary": "#4f8fa8",
-      "secondary": "#d7f0f4",
-      "ink": "#10242b"
+      "primary": "#2a284a",
+      "secondary": "#c08cff",
+      "ink": "#0d0b18"
     },
     "series": "core",
     "artUrl": "/cards/core/ghuler.png"
@@ -335,7 +335,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
   {
     "id": "sparmos-blacksmith",
     "name": "Sparmos Blacksmith",
-    "collectorNumber": "CORE-013",
+    "collectorNumber": "CORE-016",
     "rarity": "RARE",
     "tier": 1,
     "affinity": "Human",
@@ -345,11 +345,11 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 1,
       "left": 3
     },
-    "lore": "Its wings ring like bells before a clean strike.",
+    "lore": "She tempers horseshoes in ash from the road that killed her sons.",
     "palette": {
-      "primary": "#4f8fa8",
-      "secondary": "#d7f0f4",
-      "ink": "#10242b"
+      "primary": "#6d3c2f",
+      "secondary": "#e0a35a",
+      "ink": "#1f120d"
     },
     "series": "core",
     "artUrl": "/cards/core/sparmos-blacksmith.png"
@@ -357,7 +357,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
   {
     "id": "roc",
     "name": "Roc",
-    "collectorNumber": "CORE-014",
+    "collectorNumber": "CORE-017",
     "rarity": "COMMON",
     "tier": 2,
     "affinity": "Beast",
@@ -367,11 +367,11 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 2,
       "left": 3
     },
-    "lore": "Its wings ring like bells before a clean strike.",
+    "lore": "Its shadow crosses the valley a full bell before the body follows.",
     "palette": {
-      "primary": "#4f8fa8",
+      "primary": "#4f6277",
       "secondary": "#d7f0f4",
-      "ink": "#10242b"
+      "ink": "#111923"
     },
     "series": "core",
     "artUrl": "/cards/core/roc.png"
@@ -379,21 +379,21 @@ export const CARD_TEMPLATES: CardTemplate[] = [
   {
     "id": "forest-troll",
     "name": "Forest Troll",
-    "collectorNumber": "CORE-015",
+    "collectorNumber": "CORE-018",
     "rarity": "COMMON",
     "tier": 2,
-    "affinity": "Beast",
+    "affinity": "Giant",
     "sides": {
       "top": 5,
       "right": 3,
       "bottom": 3,
       "left": 4
     },
-    "lore": "Its wings ring like bells before a clean strike.",
+    "lore": "Moss grows over every oath he has not yet broken.",
     "palette": {
-      "primary": "#4f8fa8",
-      "secondary": "#d7f0f4",
-      "ink": "#10242b"
+      "primary": "#3f5d35",
+      "secondary": "#b8c779",
+      "ink": "#121a0f"
     },
     "series": "core",
     "artUrl": "/cards/core/forest-troll.png"
@@ -401,7 +401,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
   {
     "id": "moonwell-diver",
     "name": "Moonwell Diver",
-    "collectorNumber": "CORE-016",
+    "collectorNumber": "CORE-019",
     "rarity": "COMMON",
     "tier": 2,
     "affinity": "Alnathi",
@@ -411,11 +411,11 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 6,
       "left": 3
     },
-    "lore": "Its wings ring like bells before a clean strike.",
+    "lore": "She returns from the well with pearls that whisper other people's dreams.",
     "palette": {
-      "primary": "#4f8fa8",
-      "secondary": "#d7f0f4",
-      "ink": "#10242b"
+      "primary": "#2e6072",
+      "secondary": "#a8e7e1",
+      "ink": "#0d1d21"
     },
     "series": "core",
     "artUrl": "/cards/core/moonwell-diver.png"
@@ -423,7 +423,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
   {
     "id": "kynathi-highborn",
     "name": "Kynathi Highborn",
-    "collectorNumber": "CORE-017",
+    "collectorNumber": "CORE-020",
     "rarity": "COMMON",
     "tier": 2,
     "affinity": "Kynathi",
@@ -433,11 +433,11 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 5,
       "left": 3
     },
-    "lore": "Its wings ring like bells before a clean strike.",
+    "lore": "His ancestors answer before he is done being insulted.",
     "palette": {
-      "primary": "#4f8fa8",
-      "secondary": "#d7f0f4",
-      "ink": "#10242b"
+      "primary": "#4a3470",
+      "secondary": "#d8c3ff",
+      "ink": "#170f25"
     },
     "series": "core",
     "artUrl": "/cards/core/kynathi-highborn.png"
@@ -445,7 +445,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
   {
     "id": "ghoul",
     "name": "Ghoul",
-    "collectorNumber": "CORE-018",
+    "collectorNumber": "CORE-021",
     "rarity": "COMMON",
     "tier": 2,
     "affinity": "Undead",
@@ -455,11 +455,11 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 2,
       "left": 5
     },
-    "lore": "Its wings ring like bells before a clean strike.",
+    "lore": "He eats only the faithless and never goes hungry near the old shrines.",
     "palette": {
-      "primary": "#4f8fa8",
-      "secondary": "#d7f0f4",
-      "ink": "#10242b"
+      "primary": "#405c38",
+      "secondary": "#aecf7a",
+      "ink": "#121a10"
     },
     "series": "core",
     "artUrl": "/cards/core/ghoul.png"
@@ -467,7 +467,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
   {
     "id": "red-imp",
     "name": "Red Imp",
-    "collectorNumber": "CORE-018",
+    "collectorNumber": "CORE-022",
     "rarity": "COMMON",
     "tier": 2,
     "affinity": "Eldritch",
@@ -477,11 +477,11 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 3,
       "left": 5
     },
-    "lore": "Its wings ring like bells before a clean strike.",
+    "lore": "It trades sparks for secrets and always overpays.",
     "palette": {
-      "primary": "#4f8fa8",
-      "secondary": "#d7f0f4",
-      "ink": "#10242b"
+      "primary": "#783345",
+      "secondary": "#f08061",
+      "ink": "#210e13"
     },
     "series": "core",
     "artUrl": "/cards/core/red-imp.png"
@@ -489,7 +489,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
   {
     "id": "blue-imp",
     "name": "Blue Imp",
-    "collectorNumber": "CORE-018",
+    "collectorNumber": "CORE-023",
     "rarity": "COMMON",
     "tier": 2,
     "affinity": "Eldritch",
@@ -499,11 +499,11 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 5,
       "left": 2
     },
-    "lore": "Its wings ring like bells before a clean strike.",
+    "lore": "It freezes milk, ink, and last words with the same blue grin.",
     "palette": {
-      "primary": "#4f8fa8",
-      "secondary": "#d7f0f4",
-      "ink": "#10242b"
+      "primary": "#2f4d82",
+      "secondary": "#9ec8ff",
+      "ink": "#0d1423"
     },
     "series": "core",
     "artUrl": "/cards/core/blue-imp.png"
@@ -511,7 +511,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
   {
     "id": "skraal",
     "name": "Skraal",
-    "collectorNumber": "CORE-018",
+    "collectorNumber": "CORE-024",
     "rarity": "COMMON",
     "tier": 2,
     "affinity": "Aberration",
@@ -521,11 +521,11 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 5,
       "left": 2
     },
-    "lore": "Its wings ring like bells before a clean strike.",
+    "lore": "The Skraal learned to breathe through the scars the cataclysm left open.",
     "palette": {
-      "primary": "#4f8fa8",
-      "secondary": "#d7f0f4",
-      "ink": "#10242b"
+      "primary": "#68404f",
+      "secondary": "#e2a0a8",
+      "ink": "#1c1115"
     },
     "series": "core",
     "artUrl": "/cards/core/skraal.png"
@@ -533,7 +533,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
   {
     "id": "broken-doll",
     "name": "Broken Doll",
-    "collectorNumber": "CORE-018",
+    "collectorNumber": "CORE-025",
     "rarity": "COMMON",
     "tier": 2,
     "affinity": "Construct",
@@ -543,19 +543,85 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 5,
       "left": 3
     },
-    "lore": "Its wings ring like bells before a clean strike.",
+    "lore": "At midnight she asks the nursery which child should be repaired.",
     "palette": {
-      "primary": "#4f8fa8",
-      "secondary": "#d7f0f4",
-      "ink": "#10242b"
+      "primary": "#58616f",
+      "secondary": "#d7d0c5",
+      "ink": "#171a1f"
     },
     "series": "core",
     "artUrl": "/cards/core/broken-doll.png"
   },
   {
+    "id": "myrathi-raider",
+    "name": "Myrathi Raider",
+    "collectorNumber": "CORE-026",
+    "rarity": "COMMON",
+    "tier": 2,
+    "affinity": "Myrathi",
+    "sides": {
+      "top": 5,
+      "right": 1,
+      "bottom": 3,
+      "left": 4
+    },
+    "lore": "She leaves one coin nailed to each mast as payment for the storm.",
+    "palette": {
+      "primary": "#245f75",
+      "secondary": "#7dd3fc",
+      "ink": "#0b1b22"
+    },
+    "series": "core",
+    "artUrl": "/cards/core/myrathi-raider.png"
+  },
+  {
+    "id": "ember-page",
+    "name": "Ember Page",
+    "collectorNumber": "CORE-027",
+    "rarity": "UNCOMMON",
+    "tier": 2,
+    "affinity": "Human",
+    "sides": {
+      "top": 2,
+      "right": 6,
+      "bottom": 2,
+      "left": 5
+    },
+    "lore": "Every sealed coal she carries remembers the hand that lit it.",
+    "palette": {
+      "primary": "#8a2e27",
+      "secondary": "#f0b05e",
+      "ink": "#25100d"
+    },
+    "series": "core",
+    "artUrl": "/cards/core/ember-page.png"
+  },
+  {
+    "id": "myrathi-tidecaller",
+    "name": "Myrathi Tidecaller",
+    "collectorNumber": "CORE-028",
+    "rarity": "UNCOMMON",
+    "tier": 3,
+    "affinity": "Myrathi",
+    "sides": {
+      "top": 3,
+      "right": 6,
+      "bottom": 5,
+      "left": 4
+    },
+    "lore": "He names the seventh wave and the harbor obeys too late.",
+    "palette": {
+      "primary": "#1e6677",
+      "secondary": "#93e4e7",
+      "ink": "#0a1e23"
+    },
+    "series": "core",
+    "artUrl": "/cards/core/myrathi-tidecaller.png"
+  },
+  {
     "id": "siguapa",
     "name": "Siguapa",
-    "collectorNumber": "CORE-019",
+    "collectorNumber": "CORE-029",
     "rarity": "UNCOMMON",
     "tier": 3,
     "affinity": "Eldritch",
@@ -565,19 +631,63 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 3,
       "left": 5
     },
-    "lore": "Its wings ring like bells before a clean strike.",
+    "lore": "Those who follow her footprints meet themselves coming back.",
     "palette": {
-      "primary": "#4f8fa8",
-      "secondary": "#d7f0f4",
-      "ink": "#10242b"
+      "primary": "#32244d",
+      "secondary": "#c39cff",
+      "ink": "#100b19"
     },
     "series": "core",
     "artUrl": "/cards/core/siguapa.png"
   },
   {
+    "id": "flesh-amalgamation",
+    "name": "Flesh Amalgamation",
+    "collectorNumber": "CORE-030",
+    "rarity": "RARE",
+    "tier": 3,
+    "affinity": "Aberration",
+    "sides": {
+      "top": 6,
+      "right": 3,
+      "bottom": 6,
+      "left": 5
+    },
+    "lore": "It learned to say we before it learned to stop screaming.",
+    "palette": {
+      "primary": "#6e3544",
+      "secondary": "#e78c9a",
+      "ink": "#200f14"
+    },
+    "series": "core",
+    "artUrl": "/cards/core/flesh-amalgamation.png"
+  },
+  {
+    "id": "king-garath",
+    "name": "King Garath",
+    "collectorNumber": "CORE-031",
+    "rarity": "EPIC",
+    "tier": 4,
+    "affinity": "Human",
+    "sides": {
+      "top": 7,
+      "right": 5,
+      "bottom": 4,
+      "left": 6
+    },
+    "lore": "Garath wore the crown backward so the dead could see their king.",
+    "palette": {
+      "primary": "#6c4a25",
+      "secondary": "#e0bd69",
+      "ink": "#211608"
+    },
+    "series": "core",
+    "artUrl": "/cards/core/king-garath.png"
+  },
+  {
     "id": "snallygaster",
     "name": "Snallygaster",
-    "collectorNumber": "CORE-020",
+    "collectorNumber": "CORE-032",
     "rarity": "UNCOMMON",
     "tier": 4,
     "affinity": "Eldritch",
@@ -587,13 +697,101 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 6,
       "left": 3
     },
-    "lore": "Its wings ring like bells before a clean strike.",
+    "lore": "It drinks thunder from church bells and leaves the steeples mute.",
     "palette": {
-      "primary": "#4f8fa8",
-      "secondary": "#d7f0f4",
-      "ink": "#10242b"
+      "primary": "#33435f",
+      "secondary": "#a8c6ff",
+      "ink": "#101622"
     },
     "series": "core",
     "artUrl": "/cards/core/snallygaster.png"
+  },
+  {
+    "id": "leraye",
+    "name": "Leraye",
+    "collectorNumber": "CORE-033",
+    "rarity": "LEGENDARY",
+    "tier": 6,
+    "affinity": "Daeva",
+    "sides": {
+      "top": 7,
+      "right": 6,
+      "bottom": 4,
+      "left": 8
+    },
+    "lore": "Leraye's arrows never miss because they remember the wound first.",
+    "palette": {
+      "primary": "#40243f",
+      "secondary": "#d99ed0",
+      "ink": "#160c15"
+    },
+    "series": "core",
+    "artUrl": "/cards/core/leraye.png"
+  },
+  {
+    "id": "syrath",
+    "name": "Syrath",
+    "collectorNumber": "CORE-034",
+    "rarity": "LEGENDARY",
+    "tier": 7,
+    "affinity": "Daeva",
+    "sides": {
+      "top": 8,
+      "right": 4,
+      "bottom": 8,
+      "left": 6
+    },
+    "lore": "Syrath teaches fire to kneel and calls the ashes witnesses.",
+    "palette": {
+      "primary": "#742b24",
+      "secondary": "#f2a14e",
+      "ink": "#220c09"
+    },
+    "series": "core",
+    "artUrl": "/cards/core/syrath.png"
+  },
+  {
+    "id": "iphareth",
+    "name": "Iphareth",
+    "collectorNumber": "CORE-035",
+    "rarity": "LEGENDARY",
+    "tier": 8,
+    "affinity": "Daeva",
+    "sides": {
+      "top": 5,
+      "right": 9,
+      "bottom": 7,
+      "left": 8
+    },
+    "lore": "No sleeper in Vaul remembered the same moon after Iphareth opened its eye.",
+    "palette": {
+      "primary": "#28315f",
+      "secondary": "#b5b8ff",
+      "ink": "#0d1020"
+    },
+    "series": "core",
+    "artUrl": "/cards/core/iphareth.png"
+  },
+  {
+    "id": "chayliel",
+    "name": "Chayliel",
+    "collectorNumber": "CORE-036",
+    "rarity": "LEGENDARY",
+    "tier": 8,
+    "affinity": "Daeva",
+    "sides": {
+      "top": 9,
+      "right": 7,
+      "bottom": 5,
+      "left": 9
+    },
+    "lore": "Chayliel buried the sun in his chest and charged pilgrims for dawn.",
+    "palette": {
+      "primary": "#6f2834",
+      "secondary": "#f0b36b",
+      "ink": "#220c10"
+    },
+    "series": "core",
+    "artUrl": "/cards/core/chayliel.png"
   }
 ];

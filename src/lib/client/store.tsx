@@ -37,6 +37,7 @@ import { toCardInstance } from "./cards";
 
 export type ToastTone = "info" | "success" | "danger";
 export type Toast = { id: number; message: string; tone: ToastTone };
+export type OpenedCard = { template: CardTemplate; isNew: boolean; ownedBefore: number };
 
 type Store = ReturnType<typeof useStoreValue>;
 
@@ -110,7 +111,7 @@ function useStoreValue() {
 
   // Selection shared by duel / deck builder
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
-  const [openedCards, setOpenedCards] = useState<CardTemplate[]>([]);
+  const [openedCards, setOpenedCards] = useState<OpenedCard[]>([]);
 
   // Deck builder: which saved deck is active (used by PvE) and which is being edited
   const [selectedDeckCards, setSelectedDeckCards] = useState<string[]>([]);
@@ -428,17 +429,35 @@ function useStoreValue() {
   }, [selectedDeckCards, editingDeckId, deckDraftName, notify]);
 
   const openPack = useCallback(
-    async (packId: string) => {
+    async (packId: string): Promise<OpenedCard[] | null> => {
+      // Snapshot owned counts before opening so the reveal can flag NEW vs duplicate.
+      const ownedBefore = new Map<string, number>();
+      for (const card of ownedCards) {
+        ownedBefore.set(card.template.id, (ownedBefore.get(card.template.id) ?? 0) + 1);
+      }
       try {
         const result = await openBooster(packId);
-        setOpenedCards(result.opened.cards.map((card) => card.template));
+        const seen = new Map<string, number>();
+        const opened: OpenedCard[] = result.opened.cards.map(({ template }) => {
+          const before = ownedBefore.get(template.id) ?? 0;
+          const alreadyRevealed = seen.get(template.id) ?? 0;
+          seen.set(template.id, alreadyRevealed + 1);
+          return {
+            template,
+            ownedBefore: before,
+            isNew: before + alreadyRevealed === 0
+          };
+        });
+        setOpenedCards(opened);
         setSnapshot(result.snapshot);
         notify("Pack opened.", "success");
+        return opened;
       } catch (error) {
         notify(error instanceof Error ? error.message : "Pack opening failed.", "danger");
+        return null;
       }
     },
-    [notify]
+    [notify, ownedCards]
   );
 
   const transmute = useCallback(

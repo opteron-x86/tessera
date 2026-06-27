@@ -49,6 +49,11 @@ const AFFINITY_VAR: Record<string, string> = {
   Construct: "var(--affinity-construct)",
   Undead: "var(--affinity-undead)",
   Eldritch: "var(--affinity-eldritch)",
+  Aberration: "var(--affinity-aberration)",
+  Daeva: "var(--affinity-daeva)",
+  Giant: "var(--affinity-giant)",
+  Reshai: "var(--affinity-reshai)",
+  Alnathi: "var(--affinity-alnathi)",
   Myrathi: "var(--affinity-myrathi)",
   Kynathi: "var(--affinity-kynathi)"
 };
