@@ -54,6 +54,7 @@ export type RuleSet = {
   combo: boolean;
   sameWall?: boolean;
   random?: boolean;
+  roulette?: boolean;
   legion?: boolean;
   decimation?: boolean;
   suddenDeath?: boolean;
@@ -157,6 +158,7 @@ export type PveOpponent = {
   deckTemplateIds: string[];
   deckAffinity?: Affinity;
   ruleSet: RuleSet;
+  ruleRoulette?: boolean;
   rewardCurrency: number;
   tutorialCopy: string;
   unlockAfterId?: string;

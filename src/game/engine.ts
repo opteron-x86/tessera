@@ -53,6 +53,10 @@ export function otherPlayer(player: PlayerSlot): PlayerSlot {
   return player === "one" ? "two" : "one";
 }
 
+export function comboEnabled(rules: RuleSet) {
+  return Boolean(rules.combo || rules.same || rules.plus);
+}
+
 export function validateDeck(deck: Deck): string[] {
   const errors: string[] = [];
   if (deck.cards.length !== 5) {
@@ -224,7 +228,7 @@ export function resolveCaptures(
     }
   }
 
-  if (state.rules.combo && specialSeeds.length > 0) {
+  if (comboEnabled(state.rules) && specialSeeds.length > 0) {
     const combo = comboCaptures(state, command.player, specialSeeds, captured);
     for (const position of combo) {
       captured.set(position, "combo");
@@ -326,10 +330,6 @@ function normalCaptures(
 function sameCaptures(state: GameState, source: BoardCell): number[] {
   const sourceSides = effectiveSidesForCard(source.card, state.rules, state.board, state.events);
   const matches = adjacentCells(state.board, source).filter(({ direction, cell }) => {
-    if (cell.owner === source.owner) {
-      return false;
-    }
-
     const cellSides = effectiveSidesForCell(cell, state.rules, state.board, state.events);
     return sourceSides[direction.side] === cellSides[direction.opposite];
   });
@@ -338,7 +338,9 @@ function sameCaptures(state: GameState, source: BoardCell): number[] {
     return [];
   }
 
-  return matches.map(({ cell }) => cell.index);
+  return matches
+    .filter(({ cell }) => cell.owner !== source.owner)
+    .map(({ cell }) => cell.index);
 }
 
 function plusCaptures(state: GameState, source: BoardCell): number[] {
@@ -346,10 +348,6 @@ function plusCaptures(state: GameState, source: BoardCell): number[] {
   const sourceSides = effectiveSidesForCard(source.card, state.rules, state.board, state.events);
 
   for (const { direction, cell } of adjacentCells(state.board, source)) {
-    if (cell.owner === source.owner) {
-      continue;
-    }
-
     const cellSides = effectiveSidesForCell(cell, state.rules, state.board, state.events);
     const sum =
       sourceSides[direction.side] +
@@ -361,7 +359,9 @@ function plusCaptures(state: GameState, source: BoardCell): number[] {
   for (const cells of sums.values()) {
     if (cells.length >= 2) {
       for (const cell of cells) {
-        captures.add(cell.index);
+        if (cell.owner !== source.owner) {
+          captures.add(cell.index);
+        }
       }
     }
   }

@@ -189,18 +189,18 @@ export function DuelScreen() {
           label="Opponent hand"
           {...handProps}
         />
-        <aside className="hidden h-full w-72 shrink-0 flex-col gap-4 overflow-y-auto scroll-thin rounded-lg border border-line bg-surface p-4 xl:flex">
-          <section>
+        <aside className="hidden h-full w-72 shrink-0 flex-col gap-4 overflow-hidden rounded-lg border border-line bg-surface p-4 xl:flex">
+          <section className="shrink-0">
             <h3 className="mb-2 flex items-center gap-2 font-display text-sm font-semibold">
               <Swords size={15} /> Rules
             </h3>
             <RulePills rules={game.rules} />
           </section>
-          <section className="min-h-0 flex-1">
-            <h3 className="mb-2 flex items-center gap-2 font-display text-sm font-semibold">
+          <section className="flex min-h-0 flex-1 flex-col">
+            <h3 className="mb-2 flex shrink-0 items-center gap-2 font-display text-sm font-semibold">
               <ScrollText size={15} /> Match log
             </h3>
-            <MatchLog game={game} />
+            <MatchLog game={game} className="flex-1" />
           </section>
         </aside>
       </div>

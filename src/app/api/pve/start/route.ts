@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { makeWeightedAiDeck } from "@/game/content";
+import { makeWeightedAiDeck, resolvePveOpponentRules } from "@/game/content";
 import { createGame } from "@/game/engine";
 import { getRequiredUserId } from "@/lib/auth";
 import { prisma } from "@/lib/db";
@@ -42,10 +42,11 @@ export async function POST(request: Request) {
     }
 
     const matchId = randomUUID();
+    const ruleSet = resolvePveOpponentRules(opponent, matchId);
     const game = createGame({
       id: matchId,
       seed: matchId,
-      rules: opponent.ruleSet,
+      rules: ruleSet,
       playerOneDeck: toGameDeck(deck),
       playerTwoDeck: makeWeightedAiDeck(
         `${opponent.id}-deck`,
@@ -64,7 +65,7 @@ export async function POST(request: Request) {
         phase: "ACTIVE",
         playerOneId: userId,
         opponentId: opponent.id,
-        ruleSet: opponent.ruleSet,
+        ruleSet,
         seed: matchId,
         state: game
       }

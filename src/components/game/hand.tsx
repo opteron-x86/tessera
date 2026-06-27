@@ -47,11 +47,9 @@ function CardBack({ owner }: { owner?: PlayerSlot }) {
         } as React.CSSProperties
       }
     >
+      <img src="/cards/card-back.png" alt="" className="absolute inset-0 h-full w-full object-cover" />
       <div className="card-vignette" aria-hidden />
       <div className="card-frame" aria-hidden />
-      <div className="absolute inset-0 grid place-items-center">
-        <img src="/tessera-mark.svg" alt="" className="h-2/5 w-2/5 opacity-40" />
-      </div>
     </div>
   );
 }

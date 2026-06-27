@@ -5,9 +5,9 @@ const RULE_LABELS: Array<{ id: keyof RuleSet; label: string }> = [
   { id: "open", label: "Open" },
   { id: "same", label: "Same" },
   { id: "plus", label: "Plus" },
-  { id: "combo", label: "Combo" },
   { id: "sameWall", label: "Same Wall" },
   { id: "random", label: "Random" },
+  { id: "roulette", label: "Roulette" },
   { id: "legion", label: "Legion" },
   { id: "decimation", label: "Decimation" },
   { id: "suddenDeath", label: "Sudden Death" }

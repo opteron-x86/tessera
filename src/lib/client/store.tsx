@@ -17,7 +17,8 @@ import {
   PVE_OPPONENTS,
   STARTER_CARD_IDS,
   makeDeck,
-  makeWeightedAiDeck
+  makeWeightedAiDeck,
+  resolvePveOpponentRules
 } from "@/game/content";
 import { applyCommand, createGame } from "@/game/engine";
 import type { CardInstance, CardTemplate, GameState, MatchEvent, PlayerSlot } from "@/game/types";
@@ -276,10 +277,11 @@ function useStoreValue() {
 
       setPveMatchId(null);
       const nextGameId = `local-${opponent.id}-${Date.now()}`;
+      const ruleSet = resolvePveOpponentRules(opponent, nextGameId);
       const nextGame = createGame({
         id: nextGameId,
         seed: `local-${opponent.id}`,
-        rules: opponent.ruleSet,
+        rules: ruleSet,
         playerOneDeck: {
           id: "active-local",
           ownerId: "local-player",

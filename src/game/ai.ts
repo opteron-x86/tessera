@@ -1,5 +1,6 @@
 import {
   applyCommand,
+  comboEnabled,
   effectiveSidesForCard,
   effectiveSidesForCell,
   emptyPositions,
@@ -370,34 +371,31 @@ function ruleSetupValue(state: GameState, move: PlayCardCommand, profile: AiProf
   if (state.rules.same) {
     const sameMatches = adjacent.filter(
       ({ direction, cell }) => {
-        if (cell.owner === move.player) {
-          return false;
-        }
-
         const cellSides = effectiveSidesForCell(cell, state.rules, projectedBoard, state.events);
         return sourceSides[direction.side] === cellSides[direction.opposite];
       }
-    ).length;
-    value += sameMatches >= 2 ? 34 : sameMatches * 5;
+    );
+    const sameCaptures = sameMatches.filter(({ cell }) => cell.owner !== move.player).length;
+    value += sameMatches.length >= 2 ? sameCaptures * 34 : sameMatches.length * 5;
   }
 
   if (state.rules.plus) {
-    const sums = new Map<number, number>();
+    const sums = new Map<number, BoardCell[]>();
     for (const { direction, cell } of adjacent) {
-      if (cell.owner === move.player) {
-        continue;
-      }
-
       const cellSides = effectiveSidesForCell(cell, state.rules, projectedBoard, state.events);
       const sum =
         sourceSides[direction.side] +
         cellSides[direction.opposite];
-      sums.set(sum, (sums.get(sum) ?? 0) + 1);
+      sums.set(sum, [...(sums.get(sum) ?? []), cell]);
     }
-    value += [...sums.values()].some((count) => count >= 2) ? 38 : 0;
+    for (const cells of sums.values()) {
+      if (cells.length >= 2) {
+        value += cells.filter((cell) => cell.owner !== move.player).length * 38;
+      }
+    }
   }
 
-  if (state.rules.combo) {
+  if (comboEnabled(state.rules)) {
     value *= 1.15;
   }
 

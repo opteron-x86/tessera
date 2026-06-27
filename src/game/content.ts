@@ -24,11 +24,25 @@ export const CORE_RULES: RuleSet = {
   combo: false
 };
 
+export const SAME_RULES: RuleSet = {
+  open: true,
+  same: true,
+  plus: false,
+  combo: false
+};
+
+export const PLUS_RULES: RuleSet = {
+  open: true,
+  same: false,
+  plus: true,
+  combo: false
+};
+
 export const SAME_PLUS_RULES: RuleSet = {
   open: true,
   same: true,
   plus: true,
-  combo: true
+  combo: false
 };
 
 export const LEGION_RULES: RuleSet = {
@@ -46,6 +60,103 @@ export const DECIMATION_RULES: RuleSet = {
   combo: false,
   decimation: true
 };
+
+export const ROULETTE_RULES: RuleSet = {
+  open: false,
+  same: false,
+  plus: false,
+  combo: false,
+  roulette: true
+};
+
+const ROULETTE_RULE_OPTIONS: RuleSet[] = [
+  CORE_RULES,
+  {
+    open: false,
+    same: false,
+    plus: false,
+    combo: false
+  },
+  SAME_RULES,
+  PLUS_RULES,
+  SAME_PLUS_RULES,
+  {
+    open: false,
+    same: true,
+    plus: false,
+    combo: false
+  },
+  {
+    open: false,
+    same: false,
+    plus: true,
+    combo: false
+  },
+  {
+    open: false,
+    same: true,
+    plus: true,
+    combo: false
+  },
+  LEGION_RULES,
+  {
+    open: false,
+    same: false,
+    plus: false,
+    combo: false,
+    legion: true
+  },
+  DECIMATION_RULES,
+  {
+    open: false,
+    same: false,
+    plus: false,
+    combo: false,
+    decimation: true
+  },
+  {
+    open: true,
+    same: true,
+    plus: false,
+    combo: false,
+    legion: true
+  },
+  {
+    open: true,
+    same: false,
+    plus: true,
+    combo: false,
+    legion: true
+  },
+  {
+    open: true,
+    same: true,
+    plus: true,
+    combo: false,
+    legion: true
+  },
+  {
+    open: true,
+    same: true,
+    plus: false,
+    combo: false,
+    decimation: true
+  },
+  {
+    open: true,
+    same: false,
+    plus: true,
+    combo: false,
+    decimation: true
+  },
+  {
+    open: true,
+    same: true,
+    plus: true,
+    combo: false,
+    decimation: true
+  }
+];
 
 export const STARTER_CARD_IDS = [
   "piasa-whelp",
@@ -84,9 +195,9 @@ export const PVE_OPPONENTS: PveOpponent[] = [
       "forest-troll",
       "roc"
     ],
-    ruleSet: SAME_PLUS_RULES,
+    ruleSet: SAME_RULES,
     rewardCurrency: 120,
-    tutorialCopy: "The market tables favor Same, Plus, and the sudden turn of Combo.",
+    tutorialCopy: "The market tables teach Same first; matching sides can turn a duel sharply.",
     unlockAfterId: "old-road-tutor"
   },
   {
@@ -124,6 +235,24 @@ export const PVE_OPPONENTS: PveOpponent[] = [
     rewardCurrency: 180,
     tutorialCopy: "The oracle makes crowded affinities brittle at the worst possible moment.",
     unlockAfterId: "legion-banneret"
+  },
+  {
+    id: "roulette-savant",
+    name: "Roulette Savant",
+    difficulty: 5,
+    aiTier: "master",
+    deckTemplateIds: [
+      "myrathi-tidecaller",
+      "flesh-amalgamation",
+      "snallygaster",
+      "ember-page",
+      "sparmos-blacksmith"
+    ],
+    ruleSet: ROULETTE_RULES,
+    ruleRoulette: true,
+    rewardCurrency: 240,
+    tutorialCopy: "The savant spins the laws of the match before the first card falls.",
+    unlockAfterId: "decimation-oracle"
   }
 ];
 
@@ -173,6 +302,16 @@ export function getCardsByRarity(rarity: CardRarity): CardTemplate[] {
 
 export function getCardsByPowerTier(tier: PowerTier): CardTemplate[] {
   return CARD_TEMPLATES.filter((card) => card.tier === tier);
+}
+
+export function resolvePveOpponentRules(opponent: PveOpponent, seed: string): RuleSet {
+  if (!opponent.ruleRoulette) {
+    return { ...opponent.ruleSet };
+  }
+
+  const random = createRng(`${seed}:${opponent.id}:rules`);
+  const option = ROULETTE_RULE_OPTIONS[Math.floor(random() * ROULETTE_RULE_OPTIONS.length)]!;
+  return { ...option };
 }
 
 export function makeCardInstance(
