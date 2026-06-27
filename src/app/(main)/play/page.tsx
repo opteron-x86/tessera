@@ -1,5 +1,5 @@
-import { PlayScreen } from "@/components/screens/play-screen";
+import { ArenaLanding } from "@/components/play/arena-landing";
 
 export default function PlayPage() {
-  return <PlayScreen />;
+  return <ArenaLanding />;
 }

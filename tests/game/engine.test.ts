@@ -65,6 +65,13 @@ describe("Tessera engine", () => {
     });
 
     expect(result.board[1]?.owner).toBe("one");
+    expect(result.events).toContainEqual(
+      expect.objectContaining({
+        type: "RULE_TRIGGERED",
+        rule: "legion",
+        affinity: "Beast"
+      })
+    );
   });
 
   it("applies Decimation immediately when the third matching affinity enters the board", () => {
@@ -90,6 +97,74 @@ describe("Tessera engine", () => {
 
     expect(result.board[1]?.owner).toBe("two");
     expect(result.events.some((event) => event.type === "CARDS_CAPTURED")).toBe(false);
+    expect(result.events).toContainEqual(
+      expect.objectContaining({
+        type: "RULE_TRIGGERED",
+        rule: "decimation",
+        affinity: "Beast"
+      })
+    );
+  });
+
+  it("does not repeat the Legion trigger once an affinity is already active", () => {
+    const one = deckWith("one", [
+      namedCard("beast-striker", sides(4, 1, 1, 1), "Beast"),
+      namedCard("beast-anchor", sides(1, 1, 1, 1), "Beast")
+    ]);
+    const two = deckWith("two", [
+      namedCard("beast-lookout-a", sides(1, 1, 1, 1), "Beast"),
+      namedCard("beast-lookout-b", sides(1, 1, 1, 1), "Beast")
+    ]);
+    const state = preparedState(one, two, { ...baseRules, legion: true });
+    state.board[0] = { index: 0, owner: "one", card: one.cards[1]! };
+    state.board[1] = { index: 1, owner: "two", card: two.cards[0]! };
+    state.board[8] = { index: 8, owner: "two", card: two.cards[1]! };
+
+    const result = playCard(state, {
+      type: "PLAY_CARD",
+      player: "one",
+      cardId: one.cards[0]!.id,
+      position: 4
+    });
+
+    expect(result.events.some((event) => event.type === "RULE_TRIGGERED")).toBe(false);
+  });
+
+  it("does not trigger or apply Legion to a second affinity in the same match", () => {
+    const one = deckWith("one", [
+      namedCard("human-striker", sides(4, 1, 1, 1), "Human"),
+      namedCard("human-anchor", sides(1, 1, 1, 1), "Human")
+    ]);
+    const two = deckWith("two", [
+      namedCard("construct-guard", sides(1, 1, 4, 1), "Construct"),
+      namedCard("human-lookout", sides(1, 1, 1, 1), "Human")
+    ]);
+    const state = preparedState(one, two, { ...baseRules, legion: true });
+    state.moveNumber = 2;
+    state.events.push({
+      type: "RULE_TRIGGERED",
+      player: "one",
+      rule: "legion",
+      affinity: "Beast",
+      moveNumber: 2
+    });
+    state.board[0] = { index: 0, owner: "one", card: one.cards[1]! };
+    state.board[1] = { index: 1, owner: "two", card: two.cards[0]! };
+    state.board[8] = { index: 8, owner: "two", card: two.cards[1]! };
+
+    const result = playCard(state, {
+      type: "PLAY_CARD",
+      player: "one",
+      cardId: one.cards[0]!.id,
+      position: 4
+    });
+
+    expect(result.board[1]?.owner).toBe("two");
+    expect(
+      result.events.some(
+        (event) => event.type === "RULE_TRIGGERED" && event.moveNumber === result.moveNumber
+      )
+    ).toBe(false);
   });
 
   it("resolves Same captures against two matching sides", () => {

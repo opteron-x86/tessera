@@ -94,19 +94,30 @@ function MobileTopBar() {
 }
 
 export function AppShell({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  // The duel owns the whole viewport: full-bleed, no global chrome.
+  const fullBleed = pathname === "/play/duel";
+
   return (
     <div className="flex min-h-screen overflow-x-hidden">
-      <NavRail />
+      {!fullBleed && <NavRail />}
       <div className="flex min-w-0 flex-1 flex-col">
-        <MobileTopBar />
-        <div className="hidden items-center justify-end px-6 py-4 lg:flex">
-          <CurrencyChip />
-        </div>
-        <main className="mx-auto w-full min-w-0 max-w-6xl flex-1 px-4 pb-28 pt-4 lg:px-8 lg:pb-10 lg:pt-0">
+        {!fullBleed && <MobileTopBar />}
+        {!fullBleed && (
+          <div className="hidden items-center justify-end px-6 py-4 lg:flex">
+            <CurrencyChip />
+          </div>
+        )}
+        <main
+          className={clsx(
+            "w-full min-w-0 flex-1",
+            !fullBleed && "mx-auto max-w-6xl px-4 pb-28 pt-4 lg:px-8 lg:pb-10 lg:pt-0"
+          )}
+        >
           {children}
         </main>
       </div>
-      <BottomNav />
+      {!fullBleed && <BottomNav />}
       <ToastViewport />
     </div>
   );

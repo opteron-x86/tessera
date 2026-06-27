@@ -300,7 +300,16 @@ function tacticalMoveScore(
     evaluateState(projected, perspective) +
     (after - before) * 55 +
     captures * sign +
-    (card ? placementValue(card, move.position, projected.board, move.player, projected.rules) * sign : 0) +
+    (card
+      ? placementValue(
+          card,
+          move.position,
+          projected.board,
+          move.player,
+          projected.rules,
+          projected.events
+        ) * sign
+      : 0) +
     ruleSetupValue(state, move, profile) * sign -
     (card ? cardCommitmentPenalty(state, card, captures, profile) * sign : 0) -
     vulnerabilityPenalty(projected, move.position, move.player, profile) * sign
@@ -355,7 +364,7 @@ function ruleSetupValue(state: GameState, move: PlayCardCommand, profile: AiProf
   const projectedBoard = state.board.map((cell, index) =>
     index === move.position ? { index, owner: move.player, card } : cell
   );
-  const sourceSides = effectiveSidesForCard(card, state.rules, projectedBoard);
+  const sourceSides = effectiveSidesForCard(card, state.rules, projectedBoard, state.events);
   let value = 0;
 
   if (state.rules.same) {
@@ -365,7 +374,7 @@ function ruleSetupValue(state: GameState, move: PlayCardCommand, profile: AiProf
           return false;
         }
 
-        const cellSides = effectiveSidesForCell(cell, state.rules, projectedBoard);
+        const cellSides = effectiveSidesForCell(cell, state.rules, projectedBoard, state.events);
         return sourceSides[direction.side] === cellSides[direction.opposite];
       }
     ).length;
@@ -379,7 +388,7 @@ function ruleSetupValue(state: GameState, move: PlayCardCommand, profile: AiProf
         continue;
       }
 
-      const cellSides = effectiveSidesForCell(cell, state.rules, projectedBoard);
+      const cellSides = effectiveSidesForCell(cell, state.rules, projectedBoard, state.events);
       const sum =
         sourceSides[direction.side] +
         cellSides[direction.opposite];
@@ -396,7 +405,7 @@ function ruleSetupValue(state: GameState, move: PlayCardCommand, profile: AiProf
 }
 
 function boardCellValue(cell: BoardCell, state: GameState) {
-  const sides = effectiveSidesForCell(cell, state.rules, state.board);
+  const sides = effectiveSidesForCell(cell, state.rules, state.board, state.events);
   return (
     placementValueForSides(sides, cell.index, state.board, cell.owner) +
     cardPowerFromSides(sides) * 0.7
@@ -408,9 +417,10 @@ function placementValue(
   position: number,
   board: Array<BoardCell | null>,
   owner: PlayerSlot,
-  rules?: GameState["rules"]
+  rules?: GameState["rules"],
+  events?: GameState["events"]
 ) {
-  const sides = rules ? effectiveSidesForCard(card, rules, board) : card.template.sides;
+  const sides = rules ? effectiveSidesForCard(card, rules, board, events) : card.template.sides;
   return placementValueForSides(sides, position, board, owner);
 }
 
@@ -516,7 +526,9 @@ function vulnerabilityPenalty(
       continue;
     }
 
-    const defense = effectiveSidesForCell(cell, state.rules, state.board)[direction.side];
+    const defense = effectiveSidesForCell(cell, state.rules, state.board, state.events)[
+      direction.side
+    ];
     const bestAttack = opponentHand.reduce(
       (best, card) => Math.max(best, card.template.sides[direction.opposite]),
       0

@@ -113,6 +113,9 @@ function useStoreValue() {
   const [selectedDeckCards, setSelectedDeckCards] = useState<string[]>([]);
   const [openedCards, setOpenedCards] = useState<CardTemplate[]>([]);
 
+  // Duel mode — which surface launched the active duel (drives the /play/duel screen)
+  const [duelMode, setDuelMode] = useState<"pve" | "pvp">("pve");
+
   // PvE / local duel
   const [opponentId, setOpponentId] = useState(PVE_OPPONENTS[0]!.id);
   const [pveMatchId, setPveMatchId] = useState<string | null>(null);
@@ -507,6 +510,8 @@ function useStoreValue() {
     openedCards,
     openPack,
     transmute,
+    duelMode,
+    setDuelMode,
     opponentId,
     pveMatchId,
     lastPveReward,

@@ -32,10 +32,10 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     "tier": 1,
     "affinity": "Beast",
     "sides": {
-      "top": 5,
+      "top": 3,
       "right": 1,
-      "bottom": 1,
-      "left": 3
+      "bottom": 5,
+      "left": 1
     },
     "lore": "Her mirror-water shows only choices already half made.",
     "palette": {
@@ -245,12 +245,56 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     "artUrl": "/cards/core/relic-hunter.png"
   },
   {
+    "id": "plague-rat",
+    "name": "Plague Rat",
+    "collectorNumber": "CORE-011",
+    "rarity": "COMMON",
+    "tier": 1,
+    "affinity": "Beast",
+    "sides": {
+      "top": 4,
+      "right": 2,
+      "bottom": 4,
+      "left": 2
+    },
+    "lore": "A ruler whose shadow moves half a breath before the body.",
+    "palette": {
+      "primary": "#29223d",
+      "secondary": "#bfa3ff",
+      "ink": "#0d0a14"
+    },
+    "series": "core",
+    "artUrl": "/cards/core/plague-rat.png"
+  },
+  {
+    "id": "cutthroat",
+    "name": "Cutthroat",
+    "collectorNumber": "CORE-011",
+    "rarity": "COMMON",
+    "tier": 1,
+    "affinity": "Human",
+    "sides": {
+      "top": 1,
+      "right": 3,
+      "bottom": 4,
+      "left": 3
+    },
+    "lore": "A ruler whose shadow moves half a breath before the body.",
+    "palette": {
+      "primary": "#29223d",
+      "secondary": "#bfa3ff",
+      "ink": "#0d0a14"
+    },
+    "series": "core",
+    "artUrl": "/cards/core/cutthroat.png"
+  },
+  {
     "id": "ghuler",
     "name": "Ghuler",
     "collectorNumber": "CORE-012",
     "rarity": "UNCOMMON",
     "tier": 1,
-    "affinity": "Undead",
+    "affinity": "Eldritch",
     "sides": {
       "top": 1,
       "right": 1,
@@ -338,7 +382,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     "collectorNumber": "CORE-016",
     "rarity": "COMMON",
     "tier": 2,
-    "affinity": "Myrathi",
+    "affinity": "Alnathi",
     "sides": {
       "top": 4,
       "right": 1,
@@ -397,5 +441,93 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     },
     "series": "core",
     "artUrl": "/cards/core/ghoul.png"
+  },
+  {
+    "id": "red-imp",
+    "name": "Red Imp",
+    "collectorNumber": "CORE-018",
+    "rarity": "COMMON",
+    "tier": 2,
+    "affinity": "Undead",
+    "sides": {
+      "top": 1,
+      "right": 5,
+      "bottom": 3,
+      "left": 5
+    },
+    "lore": "Its wings ring like bells before a clean strike.",
+    "palette": {
+      "primary": "#4f8fa8",
+      "secondary": "#d7f0f4",
+      "ink": "#10242b"
+    },
+    "series": "core",
+    "artUrl": "/cards/core/red-imp.png"
+  },
+  {
+    "id": "blue-imp",
+    "name": "Blue Imp",
+    "collectorNumber": "CORE-018",
+    "rarity": "COMMON",
+    "tier": 2,
+    "affinity": "Undead",
+    "sides": {
+      "top": 5,
+      "right": 2,
+      "bottom": 5,
+      "left": 2
+    },
+    "lore": "Its wings ring like bells before a clean strike.",
+    "palette": {
+      "primary": "#4f8fa8",
+      "secondary": "#d7f0f4",
+      "ink": "#10242b"
+    },
+    "series": "core",
+    "artUrl": "/cards/core/blue-imp.png"
+  },
+  {
+    "id": "siguapa",
+    "name": "Siguapa",
+    "collectorNumber": "CORE-019",
+    "rarity": "UNCOMMON",
+    "tier": 3,
+    "affinity": "Eldritch",
+    "sides": {
+      "top": 5,
+      "right": 5,
+      "bottom": 3,
+      "left": 5
+    },
+    "lore": "Its wings ring like bells before a clean strike.",
+    "palette": {
+      "primary": "#4f8fa8",
+      "secondary": "#d7f0f4",
+      "ink": "#10242b"
+    },
+    "series": "core",
+    "artUrl": "/cards/core/siguapa.png"
+  },
+  {
+    "id": "snallygaster",
+    "name": "Snallygaster",
+    "collectorNumber": "CORE-020",
+    "rarity": "UNCOMMON",
+    "tier": 4,
+    "affinity": "Eldritch",
+    "sides": {
+      "top": 4,
+      "right": 6,
+      "bottom": 6,
+      "left": 3
+    },
+    "lore": "Its wings ring like bells before a clean strike.",
+    "palette": {
+      "primary": "#4f8fa8",
+      "secondary": "#d7f0f4",
+      "ink": "#10242b"
+    },
+    "series": "core",
+    "artUrl": "/cards/core/snallygaster.png"
   }
 ];

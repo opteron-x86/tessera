@@ -12,6 +12,7 @@ const COMBO_TEXT_DELAY_MS = 980;
 const COMBO_FLIP_DELAY_MS = 1360;
 const CAPTURE_FLIP_MS = 520;
 const RULE_BURST_MS = 760;
+const RULE_CALLOUT_STAGGER_MS = 180;
 const ANIMATION_SETTLE_PADDING_MS = 140;
 
 type CaptureAnimation = {
@@ -20,10 +21,18 @@ type CaptureAnimation = {
   delayMs: number;
 };
 
+type RuleCallout = {
+  label: string;
+  affinity: string;
+  tone: "legion" | "decimation";
+  delayMs: number;
+};
+
 type BoardAnimation = {
   key: string;
   placedPosition: number | null;
   specialLabel: string | null;
+  ruleCallouts: RuleCallout[];
   hasCombo: boolean;
   captures: CaptureAnimation[];
 };
@@ -32,12 +41,12 @@ function ownerRing(owner: BoardCell["owner"]) {
   return owner === "one" ? "var(--player-one)" : "var(--player-two)";
 }
 
-function captureDelay(reason: CaptureReason) {
+function captureDelay(reason: CaptureReason, hasRuleCallout = false) {
   if (reason === "combo") {
     return COMBO_FLIP_DELAY_MS;
   }
 
-  if (reason === "same" || reason === "plus") {
+  if (reason === "same" || reason === "plus" || hasRuleCallout) {
     return SPECIAL_FLIP_DELAY_MS;
   }
 
@@ -45,18 +54,32 @@ function captureDelay(reason: CaptureReason) {
 }
 
 export function lastMoveAnimationSettleMs(game: GameState) {
+  const ruleEvents = game.events.filter(
+    (event): event is Extract<MatchEvent, { type: "RULE_TRIGGERED" }> =>
+      event.moveNumber === game.moveNumber && event.type === "RULE_TRIGGERED"
+  );
   const captureEvents = game.events.filter(
     (event): event is Extract<MatchEvent, { type: "CARDS_CAPTURED" }> =>
       event.moveNumber === game.moveNumber && event.type === "CARDS_CAPTURED"
   );
 
-  if (captureEvents.length === 0) {
+  if (captureEvents.length === 0 && ruleEvents.length === 0) {
     return 0;
   }
 
-  const captureEndMs = Math.max(
-    ...captureEvents.map((event) => captureDelay(event.reason) + CAPTURE_FLIP_MS)
-  );
+  const hasRuleCallout = ruleEvents.length > 0;
+  const captureEndMs =
+    captureEvents.length > 0
+      ? Math.max(
+          ...captureEvents.map(
+            (event) => captureDelay(event.reason, hasRuleCallout) + CAPTURE_FLIP_MS
+          )
+        )
+      : 0;
+  const ruleTextEndMs =
+    ruleEvents.length > 0
+      ? (ruleEvents.length - 1) * RULE_CALLOUT_STAGGER_MS + RULE_BURST_MS
+      : 0;
   const specialTextEndMs = captureEvents.some(
     (event) => event.reason === "same" || event.reason === "plus"
   )
@@ -66,7 +89,10 @@ export function lastMoveAnimationSettleMs(game: GameState) {
     ? COMBO_TEXT_DELAY_MS + RULE_BURST_MS
     : 0;
 
-  return Math.max(captureEndMs, specialTextEndMs, comboTextEndMs) + ANIMATION_SETTLE_PADDING_MS;
+  return (
+    Math.max(captureEndMs, ruleTextEndMs, specialTextEndMs, comboTextEndMs) +
+    ANIMATION_SETTLE_PADDING_MS
+  );
 }
 
 function latestMoveAnimation(game: GameState): BoardAnimation | null {
@@ -83,8 +109,12 @@ function latestMoveAnimation(game: GameState): BoardAnimation | null {
     (event): event is Extract<MatchEvent, { type: "CARDS_CAPTURED" }> =>
       event.type === "CARDS_CAPTURED"
   );
+  const ruleEvents = moveEvents.filter(
+    (event): event is Extract<MatchEvent, { type: "RULE_TRIGGERED" }> =>
+      event.type === "RULE_TRIGGERED"
+  );
 
-  if (!placed && captureEvents.length === 0) {
+  if (!placed && captureEvents.length === 0 && ruleEvents.length === 0) {
     return null;
   }
 
@@ -93,13 +123,20 @@ function latestMoveAnimation(game: GameState): BoardAnimation | null {
       captureEvents
         .filter((event) => event.reason === "same" || event.reason === "plus")
         .map((event) => event.reason.toUpperCase())
-    )
+      )
   ];
+  const ruleCallouts: RuleCallout[] = ruleEvents.map((event, index) => ({
+    label: event.rule === "decimation" ? "DECIMATE" : "LEGION",
+    affinity: event.affinity,
+    tone: event.rule,
+    delayMs: index * RULE_CALLOUT_STAGGER_MS
+  }));
+  const hasRuleCallout = ruleCallouts.length > 0;
   const captures = captureEvents.flatMap((event) =>
     event.positions.map((position) => ({
       position,
       reason: event.reason,
-      delayMs: captureDelay(event.reason)
+      delayMs: captureDelay(event.reason, hasRuleCallout)
     }))
   );
 
@@ -108,10 +145,12 @@ function latestMoveAnimation(game: GameState): BoardAnimation | null {
       game.id,
       game.moveNumber,
       placed?.position ?? "none",
+      ruleEvents.map((event) => `${event.rule}:${event.affinity}`).join("|"),
       captureEvents.map((event) => `${event.reason}:${event.positions.join(".")}`).join("|")
     ].join(":"),
     placedPosition: placed?.position ?? null,
     specialLabel: specialLabels.length > 0 ? specialLabels.join(" + ") : null,
+    ruleCallouts,
     hasCombo: captureEvents.some((event) => event.reason === "combo"),
     captures
   };
@@ -128,7 +167,7 @@ function BoardCard({
   board: Array<BoardCell | null>;
   effect?: "place" | "capture";
 }) {
-  const effectiveSides = effectiveSidesForCell(cell, game.rules, board);
+  const effectiveSides = effectiveSidesForCell(cell, game.rules, board, game.events);
   return (
     <div
       className={clsx(
@@ -253,7 +292,7 @@ export function GameBoard({
                 !cell &&
                   "bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05),transparent_70%)]",
                 isLegalTarget
-                  ? "tile-legal border-accent/50 cursor-pointer hover:bg-accent/10"
+                  ? "tile-legal cursor-pointer border-accent/50"
                   : "border-line"
               )}
             >
@@ -273,6 +312,15 @@ export function GameBoard({
       {animation?.specialLabel && (
         <RuleBurst key={`${animation.key}-special`} label={animation.specialLabel} />
       )}
+      {animation?.ruleCallouts.map((callout) => (
+        <RuleBurst
+          key={`${animation.key}-${callout.tone}-${callout.affinity}-${callout.delayMs}`}
+          label={callout.label}
+          sublabel={callout.affinity}
+          tone={callout.tone}
+          delayMs={callout.delayMs}
+        />
+      ))}
       {animation?.hasCombo && (
         <RuleBurst
           key={`${animation.key}-combo`}
@@ -287,20 +335,36 @@ export function GameBoard({
 
 function RuleBurst({
   label,
+  sublabel,
   tone = "special",
   delayMs = 0
 }: {
   label: string;
-  tone?: "special" | "combo";
+  sublabel?: string;
+  tone?: "special" | "combo" | "legion" | "decimation";
   delayMs?: number;
 }) {
   return (
     <div
-      className={clsx("rule-burst", tone === "combo" && "rule-burst-combo")}
+      className={clsx(
+        "rule-burst",
+        tone === "combo" && "rule-burst-combo",
+        tone === "legion" && "rule-burst-legion",
+        tone === "decimation" && "rule-burst-decimation"
+      )}
       style={{ "--rule-delay": `${delayMs}ms` } as React.CSSProperties}
       aria-hidden
     >
-      <span>{label}</span>
+      {sublabel ? (
+        <div className="rule-burst-stack">
+          <i className="rule-burst-side-line rule-burst-side-line-left" />
+          <i className="rule-burst-side-line rule-burst-side-line-right" />
+          <span className="rule-burst-main">{label}</span>
+          <span className="rule-burst-affinity">{sublabel.toUpperCase()}</span>
+        </div>
+      ) : (
+        <span className="rule-burst-text">{label}</span>
+      )}
     </div>
   );
 }

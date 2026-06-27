@@ -114,6 +114,13 @@ export type MatchEvent =
       moveNumber: number;
     }
   | {
+      type: "RULE_TRIGGERED";
+      player: PlayerSlot;
+      rule: "legion" | "decimation";
+      affinity: Affinity;
+      moveNumber: number;
+    }
+  | {
       type: "CARDS_CAPTURED";
       player: PlayerSlot;
       positions: number[];

@@ -15,6 +15,11 @@ function describe(event: MatchEvent): string {
   switch (event.type) {
     case "CARD_PLACED":
       return `${who(event.player)} placed a card on tile ${event.position + 1}.`;
+    case "RULE_TRIGGERED": {
+      const rule = event.rule === "decimation" ? "Decimation" : "Legion";
+      const effect = event.rule === "decimation" ? "weakened" : "empowered";
+      return `${rule} ${effect} ${event.affinity} cards.`;
+    }
     case "CARDS_CAPTURED": {
       const count = event.positions.length;
       const tag = event.reason === "normal" ? "" : ` (${CAPTURE_LABEL[event.reason]})`;

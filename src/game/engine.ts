@@ -134,7 +134,12 @@ export function playCard(state: GameState, command: PlayCardCommand): GameState 
   next.board[command.position] = placed;
   next.moveNumber += 1;
 
-  const captureResult = resolveCaptures(next, command);
+  const ruleEvents = affinityRuleTriggerEvents(state, placed, command.player, next.moveNumber);
+  const captureState: GameState = {
+    ...next,
+    events: [...next.events, ...ruleEvents]
+  };
+  const captureResult = resolveCaptures(captureState, command);
   for (const capture of captureResult.captured) {
     const cell = next.board[capture.position];
     if (cell) {
@@ -150,6 +155,7 @@ export function playCard(state: GameState, command: PlayCardCommand): GameState 
       position: command.position,
       moveNumber: next.moveNumber
     },
+    ...ruleEvents,
     ...captureEvents(command.player, captureResult, next.moveNumber)
   ];
 
@@ -307,20 +313,24 @@ function normalCaptures(
       return [];
     }
 
-    const attack = effectiveSidesForCard(source.card, state.rules, board)[direction.side];
-    const defense = effectiveSidesForCell(neighbor, state.rules, board)[direction.opposite];
+    const attack = effectiveSidesForCard(source.card, state.rules, board, state.events)[
+      direction.side
+    ];
+    const defense = effectiveSidesForCell(neighbor, state.rules, board, state.events)[
+      direction.opposite
+    ];
     return attack > defense ? [{ position: neighbor.index }] : [];
   });
 }
 
 function sameCaptures(state: GameState, source: BoardCell): number[] {
-  const sourceSides = effectiveSidesForCard(source.card, state.rules, state.board);
+  const sourceSides = effectiveSidesForCard(source.card, state.rules, state.board, state.events);
   const matches = adjacentCells(state.board, source).filter(({ direction, cell }) => {
     if (cell.owner === source.owner) {
       return false;
     }
 
-    const cellSides = effectiveSidesForCell(cell, state.rules, state.board);
+    const cellSides = effectiveSidesForCell(cell, state.rules, state.board, state.events);
     return sourceSides[direction.side] === cellSides[direction.opposite];
   });
 
@@ -333,14 +343,14 @@ function sameCaptures(state: GameState, source: BoardCell): number[] {
 
 function plusCaptures(state: GameState, source: BoardCell): number[] {
   const sums = new Map<number, BoardCell[]>();
-  const sourceSides = effectiveSidesForCard(source.card, state.rules, state.board);
+  const sourceSides = effectiveSidesForCard(source.card, state.rules, state.board, state.events);
 
   for (const { direction, cell } of adjacentCells(state.board, source)) {
     if (cell.owner === source.owner) {
       continue;
     }
 
-    const cellSides = effectiveSidesForCell(cell, state.rules, state.board);
+    const cellSides = effectiveSidesForCell(cell, state.rules, state.board, state.events);
     const sum =
       sourceSides[direction.side] +
       cellSides[direction.opposite];
@@ -395,17 +405,19 @@ function comboCaptures(
 export function effectiveSidesForCell(
   cell: BoardCell,
   rules: RuleSet,
-  board: Array<BoardCell | null>
+  board: Array<BoardCell | null>,
+  events: MatchEvent[] = []
 ) {
-  return effectiveSidesForCard(cell.card, rules, board);
+  return effectiveSidesForCard(cell.card, rules, board, events);
 }
 
 export function effectiveSidesForCard(
   card: CardInstance,
   rules: RuleSet,
-  board: Array<BoardCell | null>
+  board: Array<BoardCell | null>,
+  events: MatchEvent[] = []
 ): Sides {
-  const modifier = affinitySideModifier(rules, board, card.template.affinity);
+  const modifier = affinitySideModifier(rules, board, card.template.affinity, events);
   if (modifier === 0) {
     return card.template.sides;
   }
@@ -421,7 +433,8 @@ export function effectiveSidesForCard(
 function affinitySideModifier(
   rules: RuleSet,
   board: Array<BoardCell | null>,
-  affinity?: string
+  affinity?: string,
+  events: MatchEvent[] = []
 ) {
   if (!affinity || (!rules.legion && !rules.decimation)) {
     return 0;
@@ -432,11 +445,65 @@ function affinitySideModifier(
     return 0;
   }
 
-  return (rules.legion ? 1 : 0) - (rules.decimation ? 1 : 0);
+  const legionActive = rules.legion && hasRuleTriggered(events, "legion", affinity);
+  const decimationActive =
+    rules.decimation && hasRuleTriggered(events, "decimation", affinity);
+
+  return (legionActive ? 1 : 0) - (decimationActive ? 1 : 0);
 }
 
 function clampSide(value: number) {
   return Math.min(11, Math.max(1, value));
+}
+
+function affinityRuleTriggerEvents(
+  previousState: GameState,
+  placed: BoardCell,
+  player: PlayerSlot,
+  moveNumber: number
+): MatchEvent[] {
+  const affinity = placed.card.template.affinity;
+  if (!affinity || (!previousState.rules.legion && !previousState.rules.decimation)) {
+    return [];
+  }
+
+  const previousCount = previousState.board.filter(
+    (cell) => cell?.card.template.affinity === affinity
+  ).length;
+  const nextCount = previousCount + 1;
+  if (previousCount >= 3 || nextCount < 3) {
+    return [];
+  }
+
+  const triggeredRules = [
+    previousState.rules.legion && !hasRuleTriggered(previousState.events, "legion")
+      ? "legion"
+      : null,
+    previousState.rules.decimation && !hasRuleTriggered(previousState.events, "decimation")
+      ? "decimation"
+      : null
+  ].filter((rule): rule is "legion" | "decimation" => rule !== null);
+
+  return triggeredRules.map((rule) => ({
+    type: "RULE_TRIGGERED",
+    player,
+    rule,
+    affinity,
+    moveNumber
+  }));
+}
+
+function hasRuleTriggered(
+  events: MatchEvent[],
+  rule: "legion" | "decimation",
+  affinity?: string
+) {
+  return events.some(
+    (event) =>
+      event.type === "RULE_TRIGGERED" &&
+      event.rule === rule &&
+      (affinity === undefined || event.affinity === affinity)
+  );
 }
 
 function adjacentCells(board: Array<BoardCell | null>, source: BoardCell) {

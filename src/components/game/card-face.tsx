@@ -82,17 +82,37 @@ export function CardFace({
         </>
       )}
 
-      {/* values clustered in the top-left diamond, classic Triple Triad style */}
-      <div className="absolute left-1.5 top-1.5 z-10 grid grid-cols-[18px_18px_18px] grid-rows-[18px_18px_18px] place-items-center">
+      {/* values clustered in the top-left diamond, classic Triple Triad style.
+          On a board card below `lg` we instead pin them to the N/E/S/W edge
+          centers so the tiny mobile tiles stay legible. */}
+      <div
+        className={clsx(
+          "absolute left-1.5 top-1.5 z-10 grid-cols-[18px_18px_18px] grid-rows-[18px_18px_18px] place-items-center",
+          variant === "board" ? "hidden lg:grid" : "grid"
+        )}
+      >
         <span className="value-chip col-start-2 row-start-1">{sides.top}</span>
         <span className="value-chip col-start-1 row-start-2">{sides.left}</span>
         <span className="value-chip col-start-3 row-start-2">{sides.right}</span>
         <span className="value-chip col-start-2 row-start-3">{sides.bottom}</span>
       </div>
 
-      {/* name plate with affinity accent bar */}
+      {variant === "board" && (
+        <div className="pointer-events-none absolute inset-0 z-10 lg:hidden" aria-hidden>
+          <span className="value-chip absolute left-1/2 top-0.5 -translate-x-1/2">{sides.top}</span>
+          <span className="value-chip absolute bottom-0.5 left-1/2 -translate-x-1/2">
+            {sides.bottom}
+          </span>
+          <span className="value-chip absolute left-0.5 top-1/2 -translate-y-1/2">{sides.left}</span>
+          <span className="value-chip absolute right-0.5 top-1/2 -translate-y-1/2">
+            {sides.right}
+          </span>
+        </div>
+      )}
+
+      {/* name plate with affinity accent bar — hidden on mobile board tiles */}
       {!compact && (
-        <div className="card-name">
+        <div className={clsx("card-name", variant === "board" && "!hidden lg:!flex")}>
           <span className="truncate">{card.name}</span>
         </div>
       )}
