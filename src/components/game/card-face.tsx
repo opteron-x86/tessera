@@ -74,7 +74,7 @@ export function CardFace({
           <div className="absolute inset-x-2 bottom-9 top-7 grid place-items-center">
             <div className="card-glow" aria-hidden />
             <img
-              src={card.artUrl ?? "/cards/card-back.svg"}
+              src={card.artUrl ?? "/cards/card-back.png"}
               alt=""
               className="relative max-h-full w-auto opacity-95 drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)]"
             />
