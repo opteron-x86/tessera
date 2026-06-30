@@ -26,9 +26,18 @@ type AiProfile = {
   endgameExactAt: number;
   candidateLimit: number;
   noise: number;
-  mistakeRate: number;
   cardConservation: number;
   vulnerabilityAwareness: number;
+  /**
+   * Beginner-only knobs. The beginner samples ranked moves instead of always
+   * taking the best one, but only from a sensible band near the top so it stays
+   * easy to beat without ever blundering. `explorationPool` is the top fraction
+   * of moves it may consider; `blunderTolerance` is how far below the best move
+   * (as a share of the score spread) a move may fall and still count as
+   * reasonable.
+   */
+  explorationPool?: number;
+  blunderTolerance?: number;
 };
 
 type AiOptions = {
@@ -60,10 +69,11 @@ const AI_PROFILES: Record<AiTier, AiProfile> = {
     depth: 1,
     endgameExactAt: 0,
     candidateLimit: 99,
-    noise: 95,
-    mistakeRate: 0.38,
+    noise: 0,
     cardConservation: 0.15,
-    vulnerabilityAwareness: 0.15
+    vulnerabilityAwareness: 0.15,
+    explorationPool: 0.4,
+    blunderTolerance: 0.6
   },
   standard: {
     tier: "standard",
@@ -71,7 +81,6 @@ const AI_PROFILES: Record<AiTier, AiProfile> = {
     endgameExactAt: 0,
     candidateLimit: 99,
     noise: 8,
-    mistakeRate: 0,
     cardConservation: 0.9,
     vulnerabilityAwareness: 0.9
   },
@@ -81,7 +90,6 @@ const AI_PROFILES: Record<AiTier, AiProfile> = {
     endgameExactAt: 4,
     candidateLimit: 12,
     noise: 1.5,
-    mistakeRate: 0,
     cardConservation: 1.05,
     vulnerabilityAwareness: 1.15
   },
@@ -91,7 +99,6 @@ const AI_PROFILES: Record<AiTier, AiProfile> = {
     endgameExactAt: 5,
     candidateLimit: 14,
     noise: 0.25,
-    mistakeRate: 0,
     cardConservation: 1.2,
     vulnerabilityAwareness: 1.35
   }
@@ -123,14 +130,29 @@ function chooseBeginnerMove(
   rng: () => number,
   profile: AiProfile
 ) {
-  if (rng() < profile.mistakeRate) {
-    const start = Math.floor(moves.length * 0.35);
-    const span = Math.max(1, moves.length - start);
-    return moves[start + Math.floor(rng() * span)]!.move;
-  }
+  // Moves are ranked best-first. A beginner plays sensibly but not optimally: it
+  // samples from the stronger moves and never from the weak tail, which is what
+  // produced nonsensical plays such as dropping a fragile card into the fully
+  // exposed centre on the opening. The pick is biased toward the front of the
+  // pool so the chosen move stays plausible while remaining easy to beat.
+  const pool = sensibleMoves(moves, profile);
+  const index = Math.floor(rng() ** 2 * pool.length);
+  return pool[Math.min(index, pool.length - 1)]!.move;
+}
 
-  const poolSize = Math.max(1, Math.ceil(moves.length * 0.35));
-  return moves[Math.floor(rng() * poolSize)]!.move;
+function sensibleMoves(
+  moves: Array<{ move: PlayCardCommand; value: number }>,
+  profile: AiProfile
+) {
+  const best = moves[0]!.value;
+  const spread = best - moves[moves.length - 1]!.value;
+  const cutoff = best - spread * (profile.blunderTolerance ?? 0.6);
+  const limit = Math.max(1, Math.ceil(moves.length * (profile.explorationPool ?? 0.4)));
+
+  // Take a top slice for variety, then drop anything far enough below the best
+  // move to be a blunder. Always keep at least the single strongest move.
+  const pool = moves.slice(0, limit).filter((entry) => entry.value >= cutoff);
+  return pool.length > 0 ? pool : [moves[0]!];
 }
 
 function bestByHeuristic(
@@ -313,7 +335,7 @@ function tacticalMoveScore(
       : 0) +
     ruleSetupValue(state, move, profile) * sign -
     (card ? cardCommitmentPenalty(state, card, captures, profile) * sign : 0) -
-    vulnerabilityPenalty(projected, move.position, move.player, profile) * sign
+    vulnerabilityPenalty(projected, move.position, move.player, profile, captures) * sign
   );
 }
 
@@ -499,7 +521,8 @@ function vulnerabilityPenalty(
   state: GameState,
   position: number,
   owner: PlayerSlot,
-  profile: AiProfile
+  profile: AiProfile,
+  captureValue = 0
 ) {
   if (profile.vulnerabilityAwareness <= 0 || !state.rules.open) {
     return 0;
@@ -512,6 +535,11 @@ function vulnerabilityPenalty(
 
   const opponent = otherPlayer(owner);
   const opponentHand = state.hands[opponent];
+  const captureRelief = captureValue > 0 ? captureValue * 6 : 0;
+  const immediateCapturePenalty = Math.max(
+    0,
+    immediateReplyCapturePenalty(state, position, owner) - captureRelief
+  );
   let penalty = 0;
 
   for (const direction of DIRECTIONS) {
@@ -539,7 +567,42 @@ function vulnerabilityPenalty(
     }
   }
 
-  return penalty * profile.vulnerabilityAwareness;
+  return (penalty + immediateCapturePenalty) * profile.vulnerabilityAwareness;
+}
+
+function immediateReplyCapturePenalty(
+  state: GameState,
+  position: number,
+  owner: PlayerSlot
+) {
+  if (state.phase !== "active" || state.currentPlayer !== otherPlayer(owner)) {
+    return 0;
+  }
+
+  const cell = state.board[position];
+  if (!cell || cell.owner !== owner) {
+    return 0;
+  }
+
+  let worstPenalty = 0;
+  let totalPenalty = 0;
+  let captureReplies = 0;
+
+  for (const reply of legalMoves(state)) {
+    const replied = applyCommand(state, reply);
+    if (replied.board[position]?.owner === owner) {
+      continue;
+    }
+
+    const scoreSwing = scoreDiff(state, owner) - scoreDiff(replied, owner);
+    const captureValue = captureBonus(replied, state.events.length);
+    const penalty = Math.max(0, scoreSwing) * 64 + captureValue * 0.75 + cardPower(cell.card) * 2.4;
+    captureReplies += 1;
+    totalPenalty += penalty;
+    worstPenalty = Math.max(worstPenalty, penalty);
+  }
+
+  return worstPenalty + totalPenalty * 0.2 + captureReplies * 18;
 }
 
 function adjacentCells(board: Array<BoardCell | null>, position: number) {

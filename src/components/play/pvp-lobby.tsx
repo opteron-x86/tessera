@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Copy, Loader2, Wifi } from "lucide-react";
+import { ArrowLeft, Copy, Loader2, Swords, Wifi, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -17,10 +17,13 @@ export function PvpLobbyScreen() {
     setJoinCode,
     pvpSlot,
     pvpState,
+    searching,
     createPvpRoom,
     joinPvpRoom,
+    queueMatch,
+    cancelQueue,
     setDuelMode,
-    notify
+    notify,
   } = useTessera();
 
   // Once both seats are filled the server pushes the initial state — enter the duel.
@@ -45,17 +48,42 @@ export function PvpLobbyScreen() {
         </Link>
         <div className="flex-1">
           <h1 className="font-display text-2xl font-bold">PvP duel</h1>
-          <p className="text-sm text-content-muted">Play a live match over an invite code.</p>
+          <p className="text-sm text-content-muted">
+            Play a live match over an invite code.
+          </p>
         </div>
         <Badge className="border-line-strong text-content-muted">
           {pvpSlot ? `Seat ${pvpSlot}` : "Idle"}
         </Badge>
       </header>
 
+      {/* matchmaking */}
+      {searching ? (
+        <div className="flex items-center justify-between gap-3 rounded-lg border border-accent/40 bg-accent/10 px-4 py-3">
+          <span className="inline-flex items-center gap-2 text-sm font-medium">
+            <Loader2 size={16} className="animate-spin text-accent" /> Searching
+            for an opponent…
+          </span>
+          <Button size="sm" variant="ghost" onClick={cancelQueue}>
+            <X size={15} /> Cancel
+          </Button>
+        </div>
+      ) : (
+        <Button variant="accent" size="lg" onClick={() => void queueMatch()}>
+          <Swords size={17} /> Quick match
+        </Button>
+      )}
+
+      <div className="flex items-center gap-3 text-xs uppercase tracking-wide text-content-faint">
+        <span className="h-px flex-1 bg-line" /> or play a friend{" "}
+        <span className="h-px flex-1 bg-line" />
+      </div>
+
       <div className="grid gap-3 sm:grid-cols-2">
         <Button
-          variant="accent"
+          variant="primary"
           size="lg"
+          disabled={searching}
           onClick={() => {
             setDuelMode("pvp");
             void createPvpRoom();
@@ -85,8 +113,12 @@ export function PvpLobbyScreen() {
       {roomId && (
         <div className="flex items-center justify-between gap-3 rounded-lg border border-gold/40 bg-gold/10 px-4 py-3">
           <div>
-            <p className="text-xs uppercase tracking-wide text-content-muted">Room code</p>
-            <p className="font-display text-xl font-bold tracking-widest text-gold">{roomId}</p>
+            <p className="text-xs uppercase tracking-wide text-content-muted">
+              Room code
+            </p>
+            <p className="font-display text-xl font-bold tracking-widest text-gold">
+              {roomId}
+            </p>
           </div>
           <Button
             size="sm"
@@ -103,7 +135,8 @@ export function PvpLobbyScreen() {
 
       {waiting && (
         <p className="inline-flex items-center gap-2 text-sm text-content-muted">
-          <Loader2 size={16} className="animate-spin" /> Waiting for an opponent to join…
+          <Loader2 size={16} className="animate-spin" /> Waiting for an opponent
+          to join…
         </p>
       )}
     </div>

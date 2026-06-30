@@ -1,7 +1,15 @@
 "use client";
 
 import clsx from "clsx";
-import { BookOpen, Coins, DoorOpen, RefreshCcw, ScrollText, Swords } from "lucide-react";
+import {
+  BookOpen,
+  Coins,
+  DoorOpen,
+  RefreshCcw,
+  ScrollText,
+  Swords,
+  Timer,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { GameBoard, lastMoveAnimationSettleMs } from "@/components/game/board";
@@ -14,7 +22,11 @@ import { Button } from "@/components/ui/button";
 import { Overlay } from "@/components/ui/overlay";
 import { PVE_OPPONENTS } from "@/game/content";
 import type { GameState, PlayerSlot } from "@/game/types";
-import { OPENING_FLIP_MS, OPENING_FLIP_SPIN_MS, useTessera } from "@/lib/client/store";
+import {
+  OPENING_FLIP_MS,
+  OPENING_FLIP_SPIN_MS,
+  useTessera,
+} from "@/lib/client/store";
 
 export function DuelScreen() {
   const store = useTessera();
@@ -34,12 +46,15 @@ export function DuelScreen() {
   const canAct =
     game.phase === "active" &&
     !openingFlipVisible &&
-    (usingPvp ? game.currentPlayer === store.pvpSlot : game.currentPlayer === "one");
+    (usingPvp
+      ? game.currentPlayer === store.pvpSlot
+      : game.currentPlayer === "one");
   const onCell = usingPvp ? store.playPvp : store.playLocal;
   const reward = store.lastPveReward?.amount;
   const opponentName = usingPvp
     ? "Opponent"
-    : (PVE_OPPONENTS.find((opponent) => opponent.id === store.opponentId)?.name ?? "Opponent");
+    : (PVE_OPPONENTS.find((opponent) => opponent.id === store.opponentId)
+        ?.name ?? "Opponent");
 
   // No live duel here (e.g. direct navigation / after leaving) — back to the arena.
   const noDuel = store.game.phase === "lobby" && !store.pvpState;
@@ -56,7 +71,10 @@ export function DuelScreen() {
     }
 
     setOpeningFlipVisible(true);
-    const timeout = window.setTimeout(() => setOpeningFlipVisible(false), OPENING_FLIP_MS);
+    const timeout = window.setTimeout(
+      () => setOpeningFlipVisible(false),
+      OPENING_FLIP_MS,
+    );
     return () => window.clearTimeout(timeout);
   }, [game.id, game.moveNumber, game.phase, game.currentPlayer]);
 
@@ -117,14 +135,16 @@ export function DuelScreen() {
           onReturnToLobby={returnToLobby}
         />
       )}
-      {openingFlipVisible && <OpeningFlipOverlay game={game} youSlot={youSlot} />}
+      {openingFlipVisible && (
+        <OpeningFlipOverlay game={game} youSlot={youSlot} />
+      )}
     </div>
   );
 
   const handProps = {
     selectedCardId: store.selectedCardId,
     canAct,
-    onSelect: store.setSelectedCardId
+    onSelect: store.setSelectedCardId,
   };
 
   return (
@@ -138,17 +158,31 @@ export function DuelScreen() {
 
         <div className="flex min-w-0 items-center gap-2 text-content-muted">
           <Swords size={15} className="shrink-0" />
-          <span className="truncate text-sm font-semibold text-content">{opponentName}</span>
+          <span className="truncate text-sm font-semibold text-content">
+            {opponentName}
+          </span>
+          {usingPvp && game.phase === "active" && (
+            <TurnTimer endsAt={store.pvpTurnEndsAt} />
+          )}
         </div>
 
         <div className="flex items-center gap-2">
           {!usingPvp && (
-            <Button size="sm" variant="ghost" onClick={() => void store.resetLocalGame()}>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => void store.resetLocalGame()}
+            >
               <RefreshCcw size={16} />
               <span className="hidden sm:inline">Reset</span>
             </Button>
           )}
-          <Button size="sm" variant="ghost" className="xl:hidden" onClick={() => setInfoOpen(true)}>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="xl:hidden"
+            onClick={() => setInfoOpen(true)}
+          >
             <BookOpen size={16} />
             <span className="hidden sm:inline">Match</span>
           </Button>
@@ -161,7 +195,7 @@ export function DuelScreen() {
         style={
           {
             "--card-w": "min(calc((100dvh - 13rem) / 4), 13vw)",
-            "--hand-span": "calc(var(--card-w) * 4 + 2rem)"
+            "--hand-span": "calc(var(--card-w) * 4 + 2rem)",
           } as React.CSSProperties
         }
       >
@@ -211,7 +245,7 @@ export function DuelScreen() {
         style={
           {
             "--card-w": "min(32vw, calc((100dvh - 8rem) / 7))",
-            "--hand-span": "calc(var(--card-w) * 3 + 2rem)"
+            "--hand-span": "calc(var(--card-w) * 3 + 2rem)",
           } as React.CSSProperties
         }
       >
@@ -239,13 +273,22 @@ export function DuelScreen() {
       </div>
 
       {/* match rail as a sheet below xl */}
-      <MatchInfoOverlay open={infoOpen} onClose={() => setInfoOpen(false)} game={game} />
+      <MatchInfoOverlay
+        open={infoOpen}
+        onClose={() => setInfoOpen(false)}
+        game={game}
+      />
 
       {/* leave confirmation */}
-      <Overlay open={leaveOpen} onClose={() => setLeaveOpen(false)} title="Leave this duel?">
+      <Overlay
+        open={leaveOpen}
+        onClose={() => setLeaveOpen(false)}
+        title="Leave this duel?"
+      >
         <div className="flex flex-col gap-4">
           <p className="text-sm text-content-muted">
-            The match is still in progress. Leaving now forfeits it and returns you to the arena.
+            Leaving hands your seat to the AI and this duel will not be
+            resumable. If both players leave, the match session closes.
           </p>
           <div className="flex justify-end gap-2">
             <Button variant="ghost" onClick={() => setLeaveOpen(false)}>
@@ -261,14 +304,54 @@ export function DuelScreen() {
   );
 }
 
-function OpeningFlipOverlay({ game, youSlot }: { game: GameState; youSlot: PlayerSlot }) {
+function TurnTimer({ endsAt }: { endsAt: number | null }) {
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    if (!endsAt) {
+      return;
+    }
+    const id = window.setInterval(() => setNow(Date.now()), 500);
+    return () => window.clearInterval(id);
+  }, [endsAt]);
+
+  if (!endsAt) {
+    return null;
+  }
+
+  const remaining = Math.max(0, Math.ceil((endsAt - now) / 1000));
+  const urgent = remaining <= 5;
+  return (
+    <span
+      className={clsx(
+        "inline-flex shrink-0 items-center gap-1 rounded-md border px-1.5 py-0.5 text-xs font-semibold tabular-nums",
+        urgent
+          ? "border-danger/50 text-danger"
+          : "border-line text-content-muted",
+      )}
+    >
+      <Timer size={12} /> 0:{String(remaining).padStart(2, "0")}
+    </span>
+  );
+}
+
+function OpeningFlipOverlay({
+  game,
+  youSlot,
+}: {
+  game: GameState;
+  youSlot: PlayerSlot;
+}) {
   const [landed, setLanded] = useState(false);
   const youStart = game.currentPlayer === youSlot;
   const tone = youStart ? "var(--player-one)" : "var(--player-two)";
 
   useEffect(() => {
     setLanded(false);
-    const timeout = window.setTimeout(() => setLanded(true), OPENING_FLIP_SPIN_MS);
+    const timeout = window.setTimeout(
+      () => setLanded(true),
+      OPENING_FLIP_SPIN_MS,
+    );
     return () => window.clearTimeout(timeout);
   }, [game.id, game.currentPlayer]);
 
@@ -279,11 +362,11 @@ function OpeningFlipOverlay({ game, youSlot }: { game: GameState; youSlot: Playe
           size={44}
           className={clsx(
             "text-gold transition-transform duration-300",
-            landed ? "scale-110" : "animate-spin"
+            landed ? "scale-110" : "animate-spin",
           )}
           style={{
             animationDuration: "450ms",
-            color: landed ? tone : undefined
+            color: landed ? tone : undefined,
           }}
         />
         <div>
@@ -291,7 +374,10 @@ function OpeningFlipOverlay({ game, youSlot }: { game: GameState; youSlot: Playe
             Coin flip
           </p>
           {landed ? (
-            <h2 className="animate-pop font-display text-2xl font-bold" style={{ color: tone }}>
+            <h2
+              className="animate-pop font-display text-2xl font-bold"
+              style={{ color: tone }}
+            >
               {youStart ? "You start" : "Opponent starts"}
             </h2>
           ) : (
@@ -306,7 +392,7 @@ function OpeningFlipOverlay({ game, youSlot }: { game: GameState; youSlot: Playe
 function MatchInfoOverlay({
   open,
   onClose,
-  game
+  game,
 }: {
   open: boolean;
   onClose: () => void;

@@ -15,16 +15,12 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/feedback";
 import { Input } from "@/components/ui/input";
 import { Badge, Panel } from "@/components/ui/panel";
+import { deckBracket, deckPower } from "@/game/power";
 import type { CardInstance, CardRarity } from "@/game/types";
 import { affinityColor, normalizeSides } from "@/lib/client/cards";
 import { useTessera } from "@/lib/client/store";
 
 const DECK_SIZE = 5;
-
-function cardPower(card: CardInstance) {
-  const sides = normalizeSides(card.template.sides);
-  return sides.top + sides.right + sides.bottom + sides.left;
-}
 
 export function DecksScreen() {
   const {
@@ -77,9 +73,10 @@ export function DecksScreen() {
     return selectedDeckCards.some((id) => !set.has(id));
   }, [savedDeck, selectedDeckCards, deckDraftName]);
 
-  const avgPower = deckCards.length
-    ? Math.round(deckCards.reduce((total, card) => total + cardPower(card), 0) / deckCards.length)
-    : 0;
+  const deckPowerTotal = useMemo(
+    () => deckPower(deckCards.map((card) => ({ sides: normalizeSides(card.template.sides) }))),
+    [deckCards]
+  );
   const affinityCounts = useMemo(() => {
     const counts = new Map<string, number>();
     for (const card of deckCards) {
@@ -277,8 +274,15 @@ export function DecksScreen() {
             {deckCards.length > 0 && (
               <div className="flex flex-col gap-2 border-t border-line pt-3">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-content-muted">Avg power</span>
-                  <span className="font-semibold tabular-nums">{avgPower}</span>
+                  <span className="text-content-muted">Deck power</span>
+                  <span className="font-semibold tabular-nums">
+                    {deckPowerTotal}
+                    {valid && (
+                      <span className="ml-2 text-xs font-medium text-content-faint">
+                        {deckBracket(deckPowerTotal).label}
+                      </span>
+                    )}
+                  </span>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {affinityCounts.map(([name, count]) => (

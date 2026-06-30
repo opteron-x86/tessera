@@ -1,7 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { chooseAiMove } from "../../src/game/ai";
 import { chooseFirstPlayer, createGame, playCard, validateDeck } from "../../src/game/engine";
-import type { CardInstance, CardTemplate, Deck, GameState, RuleSet, Sides } from "../../src/game/types";
+import type {
+  CardInstance,
+  CardTemplate,
+  Deck,
+  GameState,
+  PlayCardCommand,
+  RuleSet,
+  Sides
+} from "../../src/game/types";
 
 const baseRules: RuleSet = {
   open: true,
@@ -550,6 +558,95 @@ describe("Tessera engine", () => {
     });
   });
 
+  it("standard AI avoids a move that visible replies can capture immediately", () => {
+    const one = deckWith("one", [
+      namedCard("measured-attacker", sides(2, 2, 2, 2)),
+      namedCard("one-filler-a", sides(1, 1, 1, 1)),
+      namedCard("one-filler-b", sides(1, 1, 1, 1)),
+      namedCard("one-filler-c", sides(1, 1, 1, 1)),
+      namedCard("one-filler-d", sides(1, 1, 1, 1))
+    ]);
+    const two = deckWith("two", [
+      namedCard("open-flank", sides(6, 1, 6, 1)),
+      namedCard("steady-guard", sides(4, 4, 4, 4)),
+      namedCard("two-filler-a", sides(1, 1, 1, 1)),
+      namedCard("two-filler-b", sides(1, 1, 1, 1)),
+      namedCard("two-filler-c", sides(1, 1, 1, 1))
+    ]);
+    const state = preparedState(one, two, { ...baseRules, open: true });
+    state.currentPlayer = "two";
+
+    const move = chooseAiMove(state, { tier: "standard" });
+    const projected = playCard(state, move);
+
+    expect(replyCapturingPosition(projected, move.position, move.player)).toBeNull();
+  });
+
+  it("standard AI avoids heavily exposed openers when Same is active", () => {
+    const one = deckWith("one", [
+      namedCard("piasa-whelp", sides(1, 5, 1, 4)),
+      namedCard("ghoul", sides(5, 3, 2, 5)),
+      namedCard("forest-troll", sides(5, 3, 3, 4)),
+      namedCard("moonwell-diver", sides(4, 1, 6, 3)),
+      namedCard("snallygaster", sides(4, 6, 6, 3))
+    ]);
+    const two = deckWith("two", [
+      namedCard("reshai-maskrunner", sides(2, 5, 1, 3)),
+      namedCard("canopy-duelist", sides(3, 4, 4, 6)),
+      namedCard("broken-doll", sides(5, 2, 5, 3)),
+      namedCard("sparmos-blacksmith", sides(3, 6, 1, 3)),
+      namedCard("laughing-staff-adept", sides(2, 5, 2, 4))
+    ]);
+    const state = preparedState(one, two, { ...baseRules, same: true });
+    state.currentPlayer = "two";
+    state.board[0] = { index: 0, owner: "one", card: one.cards[4]! };
+    state.hands.one = one.cards.slice(0, 4);
+
+    const move = chooseAiMove(state, { tier: "standard" });
+    const projected = playCard(state, move);
+
+    expect(move).not.toMatchObject({
+      cardId: two.cards[0]!.id,
+      position: 5
+    });
+    expect(replyCaptureCount(projected, move.position, move.player)).toBeLessThanOrEqual(1);
+  });
+
+  it("beginner AI never blunders a fragile opener into the exposed centre", () => {
+    // Mirrors the reported bug: a weak card (Wooly Rhino, 6/1/1/2) dropped dead
+    // centre on turn one. The centre exposes all four sides, so for a fragile
+    // hand a corner that tucks the low sides against the walls is always
+    // stronger. Even the easiest tier should never make that play.
+    const two = deckWith("two", [
+      namedCard("wooly-rhino", sides(6, 1, 1, 2)),
+      namedCard("plague-rat", sides(2, 1, 3, 1)),
+      namedCard("brittle-skeleton", sides(1, 2, 1, 3)),
+      namedCard("broken-doll", sides(3, 1, 2, 1)),
+      namedCard("ghoul", sides(2, 3, 1, 2))
+    ]);
+    const one = deckWith("one", [
+      sides(3, 3, 3, 3),
+      sides(2, 4, 2, 4),
+      sides(4, 2, 4, 2),
+      sides(3, 2, 3, 2),
+      sides(2, 3, 2, 3)
+    ]);
+
+    const openings = new Set<number>();
+    for (let trial = 0; trial < 60; trial += 1) {
+      const state = preparedState(one, two, baseRules);
+      state.seed = `beginner-open-${trial}`;
+      state.currentPlayer = "two";
+
+      const move = chooseAiMove(state, { tier: "beginner" });
+      expect(move.position).not.toBe(4);
+      openings.add(move.position);
+    }
+
+    // It should still vary its opening rather than collapse to one fixed move.
+    expect(openings.size).toBeGreaterThan(1);
+  });
+
   it("rejects moves out of turn", () => {
     const one = deckWith("one", [sides(1, 1, 1, 1)]);
     const two = deckWith("two", [sides(1, 1, 1, 1)]);
@@ -640,6 +737,63 @@ function template(id: string, value: Sides, affinity?: string): CardTemplate {
       ink: "#151617"
     }
   };
+}
+
+function replyCapturingPosition(
+  state: GameState,
+  position: number,
+  owner: PlayCardCommand["player"]
+) {
+  for (const card of state.hands[state.currentPlayer]) {
+    for (let replyPosition = 0; replyPosition < state.board.length; replyPosition += 1) {
+      if (state.board[replyPosition]) {
+        continue;
+      }
+
+      const replied = playCard(state, {
+        type: "PLAY_CARD",
+        player: state.currentPlayer,
+        cardId: card.id,
+        position: replyPosition
+      });
+      if (replied.board[position]?.owner !== owner) {
+        return {
+          cardId: card.id,
+          position: replyPosition
+        };
+      }
+    }
+  }
+
+  return null;
+}
+
+function replyCaptureCount(
+  state: GameState,
+  position: number,
+  owner: PlayCardCommand["player"]
+) {
+  let count = 0;
+
+  for (const card of state.hands[state.currentPlayer]) {
+    for (let replyPosition = 0; replyPosition < state.board.length; replyPosition += 1) {
+      if (state.board[replyPosition]) {
+        continue;
+      }
+
+      const replied = playCard(state, {
+        type: "PLAY_CARD",
+        player: state.currentPlayer,
+        cardId: card.id,
+        position: replyPosition
+      });
+      if (replied.board[position]?.owner !== owner) {
+        count += 1;
+      }
+    }
+  }
+
+  return count;
 }
 
 function sides(top: number, right: number, bottom: number, left: number): Sides {

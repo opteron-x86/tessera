@@ -43,6 +43,7 @@ export type SocketAck = {
   roomId?: string;
   slot?: PlayerSlot;
   state?: import("@/game/types").GameState;
+  turnEndsAt?: number;
 };
 
 async function request<T>(input: string, init?: RequestInit): Promise<T> {
@@ -58,7 +59,7 @@ function json(body: unknown): RequestInit {
   return {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
   };
 }
 
@@ -66,21 +67,25 @@ export function fetchSnapshot() {
   return request<Snapshot>("/api/bootstrap");
 }
 
-export function saveDeck(input: { deckId?: string; name: string; cardIds: string[] }) {
+export function saveDeck(input: {
+  deckId?: string;
+  name: string;
+  cardIds: string[];
+}) {
   return request<Snapshot>("/api/decks", json(input));
 }
 
 export function openBooster(packId: string) {
-  return request<{ opened: { cards: Array<{ template: CardTemplate }> }; snapshot: Snapshot }>(
-    "/api/shop/booster",
-    json({ packId })
-  );
+  return request<{
+    opened: { cards: Array<{ template: CardTemplate }> };
+    snapshot: Snapshot;
+  }>("/api/shop/booster", json({ packId }));
 }
 
 export function transmuteCard(cardId: string) {
   return request<{ transmutation: { amount: number }; snapshot: Snapshot }>(
     "/api/cards/transmute",
-    json({ cardId })
+    json({ cardId }),
   );
 }
 
@@ -100,7 +105,11 @@ export function playPveAiMove(matchId: string) {
   }>("/api/pve/ai", json({ matchId }));
 }
 
-export function playPveMove(input: { matchId: string; cardId: string; position: number }) {
+export function playPveMove(input: {
+  matchId: string;
+  cardId: string;
+  position: number;
+}) {
   return request<{
     game: GameState;
     reward: PveReward | null;

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "content:generate": "tsx scripts/generate-content.ts",
+    "cards:power": "tsx scripts/card-power.ts",
     "dev": "pnpm content:generate && tsx watch server.ts",
     "build": "pnpm content:generate && prisma generate && next build",
     "start": "tsx server.ts",
@@ -27,6 +28,7 @@
     "next-auth": "^4.24.11",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "sharp": "^0.35.2",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
     "tsx": "^4.20.3",

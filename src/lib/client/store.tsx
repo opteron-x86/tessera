@@ -8,7 +8,7 @@ import {
   useEffect,
   useMemo,
   useRef,
-  useState
+  useState,
 } from "react";
 import { io, type Socket } from "socket.io-client";
 import { chooseAiMove } from "@/game/ai";
@@ -18,10 +18,16 @@ import {
   STARTER_CARD_IDS,
   makeDeck,
   makeWeightedAiDeck,
-  resolvePveOpponentRules
+  resolvePveOpponentRules,
 } from "@/game/content";
 import { applyCommand, createGame } from "@/game/engine";
-import type { CardInstance, CardTemplate, GameState, MatchEvent, PlayerSlot } from "@/game/types";
+import type {
+  CardInstance,
+  CardTemplate,
+  GameState,
+  MatchEvent,
+  PlayerSlot,
+} from "@/game/types";
 import {
   fetchSnapshot,
   openBooster,
@@ -32,13 +38,17 @@ import {
   transmuteCard,
   type PveReward,
   type SnapshotCard,
-  type SocketAck
+  type SocketAck,
 } from "./api";
 import { toCardInstance } from "./cards";
 
 export type ToastTone = "info" | "success" | "danger";
 export type Toast = { id: number; message: string; tone: ToastTone };
-export type OpenedCard = { template: CardTemplate; isNew: boolean; ownedBefore: number };
+export type OpenedCard = {
+  template: CardTemplate;
+  isNew: boolean;
+  ownedBefore: number;
+};
 
 type Store = ReturnType<typeof useStoreValue>;
 
@@ -58,14 +68,18 @@ function delay(ms: number) {
 function aiResponseDelay(state: GameState) {
   const latestCaptures = state.events.filter(
     (event): event is Extract<MatchEvent, { type: "CARDS_CAPTURED" }> =>
-      event.moveNumber === state.moveNumber && event.type === "CARDS_CAPTURED"
+      event.moveNumber === state.moveNumber && event.type === "CARDS_CAPTURED",
   );
 
   if (latestCaptures.some((event) => event.reason === "combo")) {
     return AI_COMBO_CAPTURE_DELAY_MS;
   }
 
-  if (latestCaptures.some((event) => event.reason === "same" || event.reason === "plus")) {
+  if (
+    latestCaptures.some(
+      (event) => event.reason === "same" || event.reason === "plus",
+    )
+  ) {
     return AI_SPECIAL_CAPTURE_DELAY_MS;
   }
 
@@ -78,10 +92,59 @@ function aiResponseDelay(state: GameState) {
 
 const TesseraContext = createContext<Store | null>(null);
 
-function emitWithAck(socket: Socket, event: string, payload: unknown): Promise<SocketAck> {
+function emitWithAck(
+  socket: Socket,
+  event: string,
+  payload: unknown,
+): Promise<SocketAck> {
   return new Promise((resolve) => {
     socket.emit(event, payload, (response: SocketAck) => resolve(response));
   });
+}
+
+// The active PvP room is mirrored to localStorage so a full page refresh can
+// re-join the live match (the in-memory store is wiped on reload).
+const PVP_STORAGE_KEY = "tessera:pvp";
+type PersistedPvp = { roomId: string; slot: PlayerSlot };
+type PvpRoomPlayer = {
+  name: string;
+  userId: string;
+  connected: boolean;
+  aiControlled: boolean;
+  absenceStrikes: number;
+};
+type PvpRoomPayload = {
+  roomId: string;
+  players?: Partial<Record<PlayerSlot, PvpRoomPlayer | null>>;
+  state: GameState | null;
+  turnEndsAt?: number;
+};
+
+function readPersistedPvp(): PersistedPvp | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+  try {
+    const raw = window.localStorage.getItem(PVP_STORAGE_KEY);
+    return raw ? (JSON.parse(raw) as PersistedPvp) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writePersistedPvp(value: PersistedPvp | null) {
+  if (typeof window === "undefined") {
+    return;
+  }
+  try {
+    if (value) {
+      window.localStorage.setItem(PVP_STORAGE_KEY, JSON.stringify(value));
+    } else {
+      window.localStorage.removeItem(PVP_STORAGE_KEY);
+    }
+  } catch {
+    // ignore storage failures (private mode, quota)
+  }
 }
 
 function useStoreValue() {
@@ -92,7 +155,9 @@ function useStoreValue() {
   const [loginName, setLoginName] = useState("Wayfarer");
 
   // Data
-  const [snapshot, setSnapshot] = useState<import("./api").Snapshot | null>(null);
+  const [snapshot, setSnapshot] = useState<import("./api").Snapshot | null>(
+    null,
+  );
   const [snapshotLoading, setSnapshotLoading] = useState(false);
 
   // Toasts
@@ -107,7 +172,7 @@ function useStoreValue() {
       setToasts((current) => [...current, { id, message, tone }]);
       setTimeout(() => dismissToast(id), 4200);
     },
-    [dismissToast]
+    [dismissToast],
   );
 
   // Selection shared by duel / deck builder
@@ -131,44 +196,51 @@ function useStoreValue() {
   const aiTurnSeq = useRef(0);
   const localOneDeck = useMemo(
     () => makeDeck("local-one", "local-player", "First Road", STARTER_CARD_IDS),
-    []
+    [],
   );
-  const [game, setGame] = useState<GameState>(() =>
-    ({
-      ...createGame({
-        id: "local-demo",
-        seed: "local-demo",
-        rules: CORE_RULES,
-        playerOneDeck: localOneDeck,
-        playerTwoDeck: makeWeightedAiDeck(
-          "local-two",
-          "local-opponent",
+  const [game, setGame] = useState<GameState>(() => ({
+    ...createGame({
+      id: "local-demo",
+      seed: "local-demo",
+      rules: CORE_RULES,
+      playerOneDeck: localOneDeck,
+      playerTwoDeck: makeWeightedAiDeck(
+        "local-two",
+        "local-opponent",
         "Tutor",
         "local-demo",
         PVE_OPPONENTS[0]!.difficulty,
-        PVE_OPPONENTS[0]!.deckAffinity
-        )
-      }),
-      phase: "lobby"
-    })
-  );
+        PVE_OPPONENTS[0]!.deckAffinity,
+      ),
+    }),
+    phase: "lobby",
+  }));
 
   // PvP
   const [roomId, setRoomId] = useState("");
   const [joinCode, setJoinCode] = useState("");
   const [pvpSlot, setPvpSlot] = useState<PlayerSlot | null>(null);
   const [pvpState, setPvpState] = useState<GameState | null>(null);
+  const [pvpTurnEndsAt, setPvpTurnEndsAt] = useState<number | null>(null);
+  const [searching, setSearching] = useState(false);
   const socketRef = useRef<Socket | null>(null);
   const roomIdRef = useRef("");
   const pvpStateRef = useRef<GameState | null>(null);
+  const pvpSlotRef = useRef<PlayerSlot | null>(null);
+  const userIdRef = useRef("");
 
   const ownedCardsRaw: SnapshotCard[] = snapshot?.cards ?? localOneDeck.cards;
-  const ownedCards = useMemo(() => ownedCardsRaw.map(toCardInstance), [ownedCardsRaw]);
+  const ownedCards = useMemo(
+    () => ownedCardsRaw.map(toCardInstance),
+    [ownedCardsRaw],
+  );
   const decks = useMemo(() => snapshot?.decks ?? [], [snapshot]);
   const activeDeck = decks.find((deck) => deck.id === activeDeckId) ?? decks[0];
   const activeDeckCards: CardInstance[] = useMemo(
-    () => activeDeck?.cards.map((slot) => toCardInstance(slot.card)) ?? localOneDeck.cards,
-    [activeDeck, localOneDeck]
+    () =>
+      activeDeck?.cards.map((slot) => toCardInstance(slot.card)) ??
+      localOneDeck.cards,
+    [activeDeck, localOneDeck],
   );
   const playerCurrency = snapshot?.profile.currency ?? 500;
   const deckSlots = snapshot?.profile.deckSlots ?? 3;
@@ -176,17 +248,19 @@ function useStoreValue() {
   const isOpponentUnlocked = useCallback(
     (targetOpponentId: string) => {
       const opponent =
-        PVE_OPPONENTS.find((candidate) => candidate.id === targetOpponentId) ?? PVE_OPPONENTS[0]!;
+        PVE_OPPONENTS.find((candidate) => candidate.id === targetOpponentId) ??
+        PVE_OPPONENTS[0]!;
       if (!opponent.unlockAfterId) {
         return true;
       }
 
       return pveProgress.some(
         (progress) =>
-          progress.opponentId === opponent.unlockAfterId && Boolean(progress.completedAt)
+          progress.opponentId === opponent.unlockAfterId &&
+          Boolean(progress.completedAt),
       );
     },
-    [pveProgress]
+    [pveProgress],
   );
 
   const refreshSnapshot = useCallback(async () => {
@@ -194,14 +268,20 @@ function useStoreValue() {
     try {
       setSnapshot(await fetchSnapshot());
     } catch (error) {
-      notify(error instanceof Error ? error.message : "API unavailable.", "danger");
+      notify(
+        error instanceof Error ? error.message : "API unavailable.",
+        "danger",
+      );
     } finally {
       setSnapshotLoading(false);
     }
   }, [notify]);
 
   const applyPveReward = useCallback(
-    (reward: PveReward | null, nextSnapshot: import("./api").Snapshot | null) => {
+    (
+      reward: PveReward | null,
+      nextSnapshot: import("./api").Snapshot | null,
+    ) => {
       if (!reward) {
         return;
       }
@@ -212,7 +292,7 @@ function useStoreValue() {
       }
       notify(`+${reward.amount} currency earned.`, "success");
     },
-    [notify]
+    [notify],
   );
 
   useEffect(() => {
@@ -238,11 +318,24 @@ function useStoreValue() {
     roomIdRef.current = roomId;
   }, [roomId]);
 
+  const currentUserId = session?.user?.id ?? `local-${loginName}`;
+  useEffect(() => {
+    userIdRef.current = currentUserId;
+  }, [currentUserId]);
+
+  const rememberPvpSession = useCallback((slot: PlayerSlot | null) => {
+    pvpSlotRef.current = slot;
+    writePersistedPvp(
+      roomIdRef.current && slot ? { roomId: roomIdRef.current, slot } : null,
+    );
+  }, []);
+
   const resetLocalGame = useCallback(
     async (nextOpponentId = opponentId) => {
       const setupSeq = ++aiTurnSeq.current;
       const opponent =
-        PVE_OPPONENTS.find((candidate) => candidate.id === nextOpponentId) ?? PVE_OPPONENTS[0]!;
+        PVE_OPPONENTS.find((candidate) => candidate.id === nextOpponentId) ??
+        PVE_OPPONENTS[0]!;
       setSelectedCardId(null);
       setOpponentId(opponent.id);
       setLastPveReward(null);
@@ -257,7 +350,10 @@ function useStoreValue() {
           setPveMatchId(next.matchId);
           setGame(next.game);
           notify(`${next.opponent.name} awaits.`, "success");
-          if (next.game.phase === "active" && next.game.currentPlayer === "two") {
+          if (
+            next.game.phase === "active" &&
+            next.game.currentPlayer === "two"
+          ) {
             await delay(OPENING_AI_DELAY_MS);
             if (setupSeq !== aiTurnSeq.current) {
               return;
@@ -270,7 +366,10 @@ function useStoreValue() {
             applyPveReward(ai.reward, ai.snapshot);
           }
         } catch (error) {
-          notify(error instanceof Error ? error.message : "PvE match start failed.", "danger");
+          notify(
+            error instanceof Error ? error.message : "PvE match start failed.",
+            "danger",
+          );
         }
         return;
       }
@@ -286,7 +385,7 @@ function useStoreValue() {
           id: "active-local",
           ownerId: "local-player",
           name: "Active Deck",
-          cards: activeDeckCards
+          cards: activeDeckCards,
         },
         playerTwoDeck: makeWeightedAiDeck(
           `${opponent.id}-deck`,
@@ -294,8 +393,8 @@ function useStoreValue() {
           opponent.name,
           nextGameId,
           opponent.difficulty,
-          opponent.deckAffinity
-        )
+          opponent.deckAffinity,
+        ),
       });
       setGame(nextGame);
 
@@ -304,15 +403,24 @@ function useStoreValue() {
         if (setupSeq !== aiTurnSeq.current) {
           return;
         }
-        setGame(applyCommand(nextGame, chooseAiMove(nextGame, { tier: opponent.aiTier })));
+        setGame(
+          applyCommand(
+            nextGame,
+            chooseAiMove(nextGame, { tier: opponent.aiTier }),
+          ),
+        );
       }
     },
-    [opponentId, activeDeckCards, status, notify, applyPveReward]
+    [opponentId, activeDeckCards, status, notify, applyPveReward],
   );
 
   const playLocal = useCallback(
     async (position: number) => {
-      if (!selectedCardId || game.currentPlayer !== "one" || game.phase !== "active") {
+      if (
+        !selectedCardId ||
+        game.currentPlayer !== "one" ||
+        game.phase !== "active"
+      ) {
         return;
       }
 
@@ -320,7 +428,7 @@ function useStoreValue() {
         type: "PLAY_CARD" as const,
         player: "one" as const,
         cardId: selectedCardId,
-        position
+        position,
       };
       const turnSeq = ++aiTurnSeq.current;
 
@@ -333,7 +441,7 @@ function useStoreValue() {
           const next = await playPveMove({
             matchId: pveMatchId,
             cardId: selectedCardId,
-            position
+            position,
           });
           if (playerMove.phase === "active") {
             await delay(aiResponseDelay(playerMove));
@@ -347,7 +455,10 @@ function useStoreValue() {
           if (turnSeq === aiTurnSeq.current) {
             setGame(game);
           }
-          notify(error instanceof Error ? error.message : "PvE move failed.", "danger");
+          notify(
+            error instanceof Error ? error.message : "PvE move failed.",
+            "danger",
+          );
         }
         return;
       }
@@ -358,7 +469,8 @@ function useStoreValue() {
         setGame(playerMove);
         if (playerMove.phase === "active") {
           const opponent =
-            PVE_OPPONENTS.find((candidate) => candidate.id === opponentId) ?? PVE_OPPONENTS[0]!;
+            PVE_OPPONENTS.find((candidate) => candidate.id === opponentId) ??
+            PVE_OPPONENTS[0]!;
           const aiMove = chooseAiMove(playerMove, { tier: opponent.aiTier });
           await delay(aiResponseDelay(playerMove));
           if (turnSeq !== aiTurnSeq.current) {
@@ -367,10 +479,21 @@ function useStoreValue() {
           setGame(applyCommand(playerMove, aiMove));
         }
       } catch (error) {
-        notify(error instanceof Error ? error.message : "Illegal move.", "danger");
+        notify(
+          error instanceof Error ? error.message : "Illegal move.",
+          "danger",
+        );
       }
     },
-    [selectedCardId, game, status, pveMatchId, opponentId, notify, applyPveReward]
+    [
+      selectedCardId,
+      game,
+      status,
+      pveMatchId,
+      opponentId,
+      notify,
+      applyPveReward,
+    ],
   );
 
   const toggleDeckCard = useCallback((cardId: string) => {
@@ -379,7 +502,7 @@ function useStoreValue() {
         ? current.filter((id) => id !== cardId)
         : current.length < 5
           ? [...current, cardId]
-          : current
+          : current,
     );
   }, []);
 
@@ -395,7 +518,7 @@ function useStoreValue() {
       setDeckDraftName(deck.name);
       setSelectedDeckCards(deck.cards.map((slot) => slot.card.id));
     },
-    [decks]
+    [decks],
   );
 
   const newDeck = useCallback(() => {
@@ -413,7 +536,7 @@ function useStoreValue() {
       const next = await saveDeck({
         deckId: editingDeckId ?? undefined,
         name: deckDraftName.trim() || "New Deck",
-        cardIds: selectedDeckCards
+        cardIds: selectedDeckCards,
       });
       setSnapshot(next);
       // A create returns no id, but new decks sort last (createdAt asc); updates keep theirs.
@@ -426,7 +549,10 @@ function useStoreValue() {
       }
       notify("Deck saved.", "success");
     } catch (error) {
-      notify(error instanceof Error ? error.message : "Deck save failed.", "danger");
+      notify(
+        error instanceof Error ? error.message : "Deck save failed.",
+        "danger",
+      );
     }
   }, [selectedDeckCards, editingDeckId, deckDraftName, notify]);
 
@@ -435,7 +561,10 @@ function useStoreValue() {
       // Snapshot owned counts before opening so the reveal can flag NEW vs duplicate.
       const ownedBefore = new Map<string, number>();
       for (const card of ownedCards) {
-        ownedBefore.set(card.template.id, (ownedBefore.get(card.template.id) ?? 0) + 1);
+        ownedBefore.set(
+          card.template.id,
+          (ownedBefore.get(card.template.id) ?? 0) + 1,
+        );
       }
       try {
         const result = await openBooster(packId);
@@ -447,7 +576,7 @@ function useStoreValue() {
           return {
             template,
             ownedBefore: before,
-            isNew: before + alreadyRevealed === 0
+            isNew: before + alreadyRevealed === 0,
           };
         });
         setOpenedCards(opened);
@@ -455,11 +584,14 @@ function useStoreValue() {
         notify("Pack opened.", "success");
         return opened;
       } catch (error) {
-        notify(error instanceof Error ? error.message : "Pack opening failed.", "danger");
+        notify(
+          error instanceof Error ? error.message : "Pack opening failed.",
+          "danger",
+        );
         return null;
       }
     },
-    [notify, ownedCards]
+    [notify, ownedCards],
   );
 
   const transmute = useCallback(
@@ -469,17 +601,20 @@ function useStoreValue() {
         setSnapshot(result.snapshot);
         notify(`+${result.transmutation.amount} currency.`, "success");
       } catch (error) {
-        notify(error instanceof Error ? error.message : "Transmutation failed.", "danger");
+        notify(
+          error instanceof Error ? error.message : "Transmutation failed.",
+          "danger",
+        );
       }
     },
-    [notify]
+    [notify],
   );
 
   const handleLogin = useCallback(async () => {
     const result = await signIn("credentials", {
       email: loginEmail,
       name: loginName,
-      redirect: false
+      redirect: false,
     });
     if (result?.error) {
       notify(result.error, "danger");
@@ -491,19 +626,26 @@ function useStoreValue() {
   const clearPvpSession = useCallback(() => {
     roomIdRef.current = "";
     pvpStateRef.current = null;
+    pvpSlotRef.current = null;
+    writePersistedPvp(null);
     setSelectedCardId(null);
     setRoomId("");
     setJoinCode("");
     setPvpSlot(null);
     setPvpState(null);
+    setPvpTurnEndsAt(null);
+    setSearching(false);
   }, []);
 
   const markPvpRoomClosed = useCallback(() => {
     const finalState = pvpStateRef.current;
     roomIdRef.current = "";
+    writePersistedPvp(null);
     setSelectedCardId(null);
     setRoomId("");
     setJoinCode("");
+    setPvpTurnEndsAt(null);
+    setSearching(false);
 
     if (finalState?.phase !== "complete") {
       clearPvpSession();
@@ -519,16 +661,99 @@ function useStoreValue() {
     setGame((current) => ({ ...current, phase: "lobby" }));
   }, []);
 
+  const handleOwnPvpDrop = useCallback(() => {
+    closeLocalDuelSession();
+    clearPvpSession();
+    setDuelMode("pve");
+    notify("Your seat was handed to the AI after repeated absences.", "danger");
+  }, [clearPvpSession, closeLocalDuelSession, notify]);
+
   const getSocket = useCallback(() => {
     if (!socketRef.current) {
-      socketRef.current = io({ path: "/socket.io" });
-      socketRef.current.on("pvp:room", (payload: { roomId: string; state: GameState | null }) => {
+      const socket = io({ path: "/socket.io" });
+      socketRef.current = socket;
+
+      socket.on("pvp:room", (payload: PvpRoomPayload) => {
+        const ownSeat = pvpSlotRef.current
+          ? payload.players?.[pvpSlotRef.current]
+          : null;
+        if (ownSeat?.aiControlled) {
+          handleOwnPvpDrop();
+          return;
+        }
+
         roomIdRef.current = payload.roomId;
         pvpStateRef.current = payload.state;
         setRoomId(payload.roomId);
         setPvpState(payload.state);
+        setPvpTurnEndsAt(payload.turnEndsAt ?? null);
+        if (payload.state && payload.state.phase !== "complete") {
+          writePersistedPvp(
+            pvpSlotRef.current
+              ? { roomId: payload.roomId, slot: pvpSlotRef.current }
+              : null,
+          );
+        }
       });
-      socketRef.current.on("pvp:closed", (payload: { roomId?: string }) => {
+
+      socket.on(
+        "pvp:matched",
+        (payload: { roomId: string; slot: PlayerSlot }) => {
+          roomIdRef.current = payload.roomId;
+          pvpSlotRef.current = payload.slot;
+          setRoomId(payload.roomId);
+          setPvpSlot(payload.slot);
+          setDuelMode("pvp");
+          setSearching(false);
+          writePersistedPvp({ roomId: payload.roomId, slot: payload.slot });
+        },
+      );
+
+      socket.on("pvp:queue:error", (payload: { error?: string }) => {
+        setSearching(false);
+        notify(payload.error ?? "Matchmaking failed.", "danger");
+      });
+
+      socket.on(
+        "pvp:dropped",
+        (payload: { roomId?: string; slot?: PlayerSlot }) => {
+          const matchesRoom =
+            !payload.roomId || payload.roomId === roomIdRef.current;
+          const matchesSeat =
+            !payload.slot || payload.slot === pvpSlotRef.current;
+          if (matchesRoom && matchesSeat) {
+            handleOwnPvpDrop();
+          }
+        },
+      );
+
+      // Resume an interrupted match after a transient drop or a page refresh.
+      socket.on("connect", () => {
+        const roomId = roomIdRef.current;
+        const userId = userIdRef.current;
+        if (!roomId || !userId || pvpStateRef.current?.phase === "complete") {
+          return;
+        }
+        void emitWithAck(socket, "pvp:rejoin", { roomId, userId }).then(
+          (ack) => {
+            if (!ack.ok) {
+              clearPvpSession();
+              return;
+            }
+            if (ack.slot) {
+              pvpSlotRef.current = ack.slot;
+              setPvpSlot(ack.slot);
+            }
+            pvpStateRef.current = ack.state ?? null;
+            setRoomId(roomId);
+            setPvpState(ack.state ?? null);
+            setPvpTurnEndsAt(ack.turnEndsAt ?? null);
+            setDuelMode("pvp");
+          },
+        );
+      });
+
+      socket.on("pvp:closed", (payload: { roomId?: string }) => {
         if (!payload.roomId || payload.roomId === roomIdRef.current) {
           closeLocalDuelSession();
           markPvpRoomClosed();
@@ -536,7 +761,13 @@ function useStoreValue() {
       });
     }
     return socketRef.current;
-  }, [closeLocalDuelSession, markPvpRoomClosed]);
+  }, [
+    closeLocalDuelSession,
+    markPvpRoomClosed,
+    clearPvpSession,
+    handleOwnPvpDrop,
+    notify,
+  ]);
 
   const closePvpSession = useCallback(() => {
     const activeRoomId = roomId;
@@ -547,11 +778,13 @@ function useStoreValue() {
       return;
     }
 
-    void emitWithAck(socket, "pvp:close", { roomId: activeRoomId }).then((ack) => {
-      if (!ack.ok) {
-        notify(ack.error ?? "Room close failed.", "danger");
-      }
-    });
+    void emitWithAck(socket, "pvp:close", { roomId: activeRoomId }).then(
+      (ack) => {
+        if (!ack.ok) {
+          notify(ack.error ?? "Room close failed.", "danger");
+        }
+      },
+    );
   }, [clearPvpSession, notify, roomId]);
 
   const closeDuelSession = useCallback(() => {
@@ -564,8 +797,8 @@ function useStoreValue() {
 
   const createPvpRoom = useCallback(async () => {
     const ack = await emitWithAck(getSocket(), "pvp:create", {
-      userId: session?.user?.id ?? `local-${loginName}`,
-      name: session?.user?.name ?? loginName
+      userId: currentUserId,
+      name: session?.user?.name ?? loginName,
     });
     if (!ack.ok) {
       notify(ack.error ?? "Room creation failed.", "danger");
@@ -576,14 +809,23 @@ function useStoreValue() {
     setRoomId(ack.roomId ?? "");
     setPvpSlot(ack.slot ?? "one");
     setPvpState(null);
+    setPvpTurnEndsAt(null);
+    rememberPvpSession(ack.slot ?? "one");
     notify(`Room ${ack.roomId} created.`, "success");
-  }, [getSocket, session, loginName, notify]);
+  }, [
+    getSocket,
+    currentUserId,
+    session,
+    loginName,
+    notify,
+    rememberPvpSession,
+  ]);
 
   const joinPvpRoom = useCallback(async () => {
     const ack = await emitWithAck(getSocket(), "pvp:join", {
       roomId: joinCode,
-      userId: session?.user?.id ?? `local-${loginName}`,
-      name: session?.user?.name ?? loginName
+      userId: currentUserId,
+      name: session?.user?.name ?? loginName,
     });
     if (!ack.ok) {
       notify(ack.error ?? "Join failed.", "danger");
@@ -594,11 +836,62 @@ function useStoreValue() {
     setRoomId(ack.roomId ?? "");
     setPvpSlot(ack.slot ?? "two");
     setPvpState(ack.state ?? null);
-  }, [getSocket, joinCode, session, loginName, notify]);
+    setPvpTurnEndsAt(ack.turnEndsAt ?? null);
+    setDuelMode("pvp");
+    rememberPvpSession(ack.slot ?? "two");
+  }, [
+    getSocket,
+    joinCode,
+    currentUserId,
+    session,
+    loginName,
+    notify,
+    rememberPvpSession,
+  ]);
+
+  const queueMatch = useCallback(async () => {
+    setDuelMode("pvp");
+    setSearching(true);
+    const ack = await emitWithAck(getSocket(), "pvp:queue", {
+      userId: currentUserId,
+      name: session?.user?.name ?? loginName,
+    });
+    if (!ack.ok) {
+      setSearching(false);
+      notify(ack.error ?? "Could not join the queue.", "danger");
+    }
+  }, [getSocket, currentUserId, session, loginName, notify]);
+
+  const cancelQueue = useCallback(() => {
+    setSearching(false);
+    const socket = socketRef.current;
+    if (socket) {
+      void emitWithAck(socket, "pvp:queue:cancel", {});
+    }
+  }, []);
+
+  // On first mount, try to resume a PvP match that survived a page refresh.
+  useEffect(() => {
+    const stored = readPersistedPvp();
+    if (!stored) {
+      return;
+    }
+    roomIdRef.current = stored.roomId;
+    pvpSlotRef.current = stored.slot;
+    setRoomId(stored.roomId);
+    setPvpSlot(stored.slot);
+    setDuelMode("pvp");
+    getSocket(); // its "connect" handler emits pvp:rejoin and rehydrates state
+  }, [getSocket]);
 
   const playPvp = useCallback(
     async (position: number) => {
-      if (!pvpState || !pvpSlot || !selectedCardId || pvpState.currentPlayer !== pvpSlot) {
+      if (
+        !pvpState ||
+        !pvpSlot ||
+        !selectedCardId ||
+        pvpState.currentPlayer !== pvpSlot
+      ) {
         return;
       }
       const ack = await emitWithAck(getSocket(), "pvp:play", {
@@ -607,8 +900,8 @@ function useStoreValue() {
           type: "PLAY_CARD",
           player: pvpSlot,
           cardId: selectedCardId,
-          position
-        }
+          position,
+        },
       });
       if (!ack.ok) {
         notify(ack.error ?? "Move rejected.", "danger");
@@ -618,7 +911,7 @@ function useStoreValue() {
       pvpStateRef.current = ack.state ?? null;
       setPvpState(ack.state ?? null);
     },
-    [pvpState, pvpSlot, selectedCardId, getSocket, roomId, notify]
+    [pvpState, pvpSlot, selectedCardId, getSocket, roomId, notify],
   );
 
   return {
@@ -672,16 +965,26 @@ function useStoreValue() {
     setJoinCode,
     pvpSlot,
     pvpState,
+    pvpTurnEndsAt,
+    searching,
     createPvpRoom,
     joinPvpRoom,
+    queueMatch,
+    cancelQueue,
     playPvp,
-    closeDuelSession
+    closeDuelSession,
   };
 }
 
-export function TesseraStoreProvider({ children }: { children: React.ReactNode }) {
+export function TesseraStoreProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const value = useStoreValue();
-  return <TesseraContext.Provider value={value}>{children}</TesseraContext.Provider>;
+  return (
+    <TesseraContext.Provider value={value}>{children}</TesseraContext.Provider>
+  );
 }
 
 export function useTessera() {

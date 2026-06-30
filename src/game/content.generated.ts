@@ -15,7 +15,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 1,
       "left": 4
     },
-    "lore": "It ferries living coals between keeps that no longer agree on the border.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#b64b39",
       "secondary": "#f4b66b",
@@ -37,7 +37,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 5,
       "left": 1
     },
-    "lore": "The old road keeps its distance when her pack begins to sing.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#3f4f55",
       "secondary": "#b8c7c9",
@@ -59,7 +59,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 1,
       "left": 2
     },
-    "lore": "Hunters mark its trail by the trees it refuses to walk around.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#66717a",
       "secondary": "#d1c5ad",
@@ -81,7 +81,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 3,
       "left": 5
     },
-    "lore": "It repeats the last order of a master whose name wore off its tongue.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#5f6f78",
       "secondary": "#c7d2d8",
@@ -103,7 +103,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 1,
       "left": 1
     },
-    "lore": "Its wings ring like glass just before the fever takes hold.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#7f3f45",
       "secondary": "#f0a05d",
@@ -125,7 +125,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 4,
       "left": 1
     },
-    "lore": "One egg can feed a village or ransom it through winter.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#87362e",
       "secondary": "#d99450",
@@ -147,7 +147,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 4,
       "left": 4
     },
-    "lore": "She knots moonlit grass around the names of those who stray.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#315c95",
       "secondary": "#bad7ff",
@@ -169,7 +169,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 4,
       "left": 3
     },
-    "lore": "The grave gave him back because the debt was older than death.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#49642e",
       "secondary": "#d7c16f",
@@ -191,7 +191,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 2,
       "left": 6
     },
-    "lore": "He rattles toward any bell that sounds like his own funeral.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#6f6658",
       "secondary": "#e2d3ac",
@@ -213,7 +213,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 2,
       "left": 1
     },
-    "lore": "Its tears melt footprints into maps no sane hunter follows.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#4d3358",
       "secondary": "#d8a7cf",
@@ -235,7 +235,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 1,
       "left": 5
     },
-    "lore": "He sells the lock and keeps the key for whatever wakes beneath it.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#6b5232",
       "secondary": "#d9bd75",
@@ -257,7 +257,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 4,
       "left": 2
     },
-    "lore": "The fifth bite remembers the first city that burned for it.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#3d5b3a",
       "secondary": "#bccb6b",
@@ -279,7 +279,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 4,
       "left": 3
     },
-    "lore": "No contract survives the alley where she sharpens her smile.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#5a2e36",
       "secondary": "#d1836f",
@@ -301,7 +301,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 1,
       "left": 1
     },
-    "lore": "He annotates forbidden histories in inks that fade from lesser minds.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#40325f",
       "secondary": "#c8b6ff",
@@ -309,6 +309,50 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     },
     "series": "core",
     "artUrl": "/cards/core/natari-erudite.png"
+  },
+  {
+    "id": "tipsy-wyvern-wench",
+    "name": "Tipsy Wyvern Wench",
+    "collectorNumber": "CORE-014",
+    "rarity": "COMMON",
+    "tier": 1,
+    "affinity": "Human",
+    "sides": {
+      "top": 1,
+      "right": 5,
+      "bottom": 3,
+      "left": 3
+    },
+    "lore": "Nothing here...",
+    "palette": {
+      "primary": "#40325f",
+      "secondary": "#c8b6ff",
+      "ink": "#151020"
+    },
+    "series": "core",
+    "artUrl": "/cards/core/tipsy-wyvern-wench.png"
+  },
+  {
+    "id": "reshai-maskrunner",
+    "name": "Reshai Maskrunner",
+    "collectorNumber": "CORE-014",
+    "rarity": "COMMON",
+    "tier": 1,
+    "affinity": "Reshai",
+    "sides": {
+      "top": 2,
+      "right": 5,
+      "bottom": 1,
+      "left": 3
+    },
+    "lore": "Nothing here...",
+    "palette": {
+      "primary": "#40325f",
+      "secondary": "#c8b6ff",
+      "ink": "#151020"
+    },
+    "series": "core",
+    "artUrl": "/cards/core/reshai-maskrunner.png"
   },
   {
     "id": "ghuler",
@@ -323,7 +367,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 5,
       "left": 5
     },
-    "lore": "It gnaws through prayers first so the bones have nowhere to hide.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#2a284a",
       "secondary": "#c08cff",
@@ -345,7 +389,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 1,
       "left": 3
     },
-    "lore": "She tempers horseshoes in ash from the road that killed her sons.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#6d3c2f",
       "secondary": "#e0a35a",
@@ -353,6 +397,28 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     },
     "series": "core",
     "artUrl": "/cards/core/sparmos-blacksmith.png"
+  },
+  {
+    "id": "velvet-thorn-courtesan",
+    "name": "Velvet Thorn Courtesan",
+    "collectorNumber": "CORE-016",
+    "rarity": "RARE",
+    "tier": 1,
+    "affinity": "Alnathi",
+    "sides": {
+      "top": 1,
+      "right": 4,
+      "bottom": 1,
+      "left": 6
+    },
+    "lore": "Nothing here...",
+    "palette": {
+      "primary": "#6d3c2f",
+      "secondary": "#e0a35a",
+      "ink": "#1f120d"
+    },
+    "series": "core",
+    "artUrl": "/cards/core/velvet-thorn-courtesan.png"
   },
   {
     "id": "roc",
@@ -367,7 +433,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 2,
       "left": 3
     },
-    "lore": "Its shadow crosses the valley a full bell before the body follows.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#4f6277",
       "secondary": "#d7f0f4",
@@ -389,7 +455,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 3,
       "left": 4
     },
-    "lore": "Moss grows over every oath he has not yet broken.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#3f5d35",
       "secondary": "#b8c779",
@@ -411,7 +477,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 6,
       "left": 3
     },
-    "lore": "She returns from the well with pearls that whisper other people's dreams.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#2e6072",
       "secondary": "#a8e7e1",
@@ -433,7 +499,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 5,
       "left": 3
     },
-    "lore": "His ancestors answer before he is done being insulted.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#4a3470",
       "secondary": "#d8c3ff",
@@ -455,7 +521,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 2,
       "left": 5
     },
-    "lore": "He eats only the faithless and never goes hungry near the old shrines.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#405c38",
       "secondary": "#aecf7a",
@@ -477,7 +543,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 3,
       "left": 5
     },
-    "lore": "It trades sparks for secrets and always overpays.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#783345",
       "secondary": "#f08061",
@@ -499,7 +565,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 5,
       "left": 2
     },
-    "lore": "It freezes milk, ink, and last words with the same blue grin.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#2f4d82",
       "secondary": "#9ec8ff",
@@ -521,7 +587,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 5,
       "left": 2
     },
-    "lore": "The Skraal learned to breathe through the scars the cataclysm left open.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#68404f",
       "secondary": "#e2a0a8",
@@ -529,6 +595,28 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     },
     "series": "core",
     "artUrl": "/cards/core/skraal.png"
+  },
+  {
+    "id": "laughing-staff-adept",
+    "name": "Laughing Staff Adept",
+    "collectorNumber": "CORE-024",
+    "rarity": "UNCOMMON",
+    "tier": 2,
+    "affinity": "Reshai",
+    "sides": {
+      "top": 2,
+      "right": 5,
+      "bottom": 2,
+      "left": 4
+    },
+    "lore": "Nothing here...",
+    "palette": {
+      "primary": "#68404f",
+      "secondary": "#e2a0a8",
+      "ink": "#1c1115"
+    },
+    "series": "core",
+    "artUrl": "/cards/core/laughing-staff-adept.png"
   },
   {
     "id": "broken-doll",
@@ -543,7 +631,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 5,
       "left": 3
     },
-    "lore": "At midnight she asks the nursery which child should be repaired.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#58616f",
       "secondary": "#d7d0c5",
@@ -565,7 +653,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 3,
       "left": 4
     },
-    "lore": "She leaves one coin nailed to each mast as payment for the storm.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#245f75",
       "secondary": "#7dd3fc",
@@ -587,7 +675,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 2,
       "left": 5
     },
-    "lore": "Every sealed coal she carries remembers the hand that lit it.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#8a2e27",
       "secondary": "#f0b05e",
@@ -609,7 +697,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 5,
       "left": 4
     },
-    "lore": "He names the seventh wave and the harbor obeys too late.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#1e6677",
       "secondary": "#93e4e7",
@@ -617,6 +705,28 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     },
     "series": "core",
     "artUrl": "/cards/core/myrathi-tidecaller.png"
+  },
+  {
+    "id": "canopy-duelist",
+    "name": "Canopy Duelist",
+    "collectorNumber": "CORE-028",
+    "rarity": "UNCOMMON",
+    "tier": 3,
+    "affinity": "Reshai",
+    "sides": {
+      "top": 3,
+      "right": 4,
+      "bottom": 4,
+      "left": 6
+    },
+    "lore": "Nothing here...",
+    "palette": {
+      "primary": "#1e6677",
+      "secondary": "#93e4e7",
+      "ink": "#0a1e23"
+    },
+    "series": "core",
+    "artUrl": "/cards/core/canopy-duelist.png"
   },
   {
     "id": "siguapa",
@@ -631,7 +741,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 3,
       "left": 5
     },
-    "lore": "Those who follow her footprints meet themselves coming back.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#32244d",
       "secondary": "#c39cff",
@@ -653,7 +763,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 6,
       "left": 5
     },
-    "lore": "It learned to say we before it learned to stop screaming.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#6e3544",
       "secondary": "#e78c9a",
@@ -675,7 +785,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 4,
       "left": 6
     },
-    "lore": "Garath wore the crown backward so the dead could see their king.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#6c4a25",
       "secondary": "#e0bd69",
@@ -697,7 +807,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 6,
       "left": 3
     },
-    "lore": "It drinks thunder from church bells and leaves the steeples mute.",
+    "lore": "Nothing here...",
     "palette": {
       "primary": "#33435f",
       "secondary": "#a8c6ff",
@@ -705,93 +815,5 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     },
     "series": "core",
     "artUrl": "/cards/core/snallygaster.png"
-  },
-  {
-    "id": "leraye",
-    "name": "Leraye",
-    "collectorNumber": "CORE-033",
-    "rarity": "LEGENDARY",
-    "tier": 6,
-    "affinity": "Daeva",
-    "sides": {
-      "top": 7,
-      "right": 6,
-      "bottom": 4,
-      "left": 8
-    },
-    "lore": "Leraye's arrows never miss because they remember the wound first.",
-    "palette": {
-      "primary": "#40243f",
-      "secondary": "#d99ed0",
-      "ink": "#160c15"
-    },
-    "series": "core",
-    "artUrl": "/cards/core/leraye.png"
-  },
-  {
-    "id": "syrath",
-    "name": "Syrath",
-    "collectorNumber": "CORE-034",
-    "rarity": "LEGENDARY",
-    "tier": 7,
-    "affinity": "Daeva",
-    "sides": {
-      "top": 8,
-      "right": 4,
-      "bottom": 8,
-      "left": 6
-    },
-    "lore": "Syrath teaches fire to kneel and calls the ashes witnesses.",
-    "palette": {
-      "primary": "#742b24",
-      "secondary": "#f2a14e",
-      "ink": "#220c09"
-    },
-    "series": "core",
-    "artUrl": "/cards/core/syrath.png"
-  },
-  {
-    "id": "iphareth",
-    "name": "Iphareth",
-    "collectorNumber": "CORE-035",
-    "rarity": "LEGENDARY",
-    "tier": 8,
-    "affinity": "Daeva",
-    "sides": {
-      "top": 5,
-      "right": 9,
-      "bottom": 7,
-      "left": 8
-    },
-    "lore": "No sleeper in Vaul remembered the same moon after Iphareth opened its eye.",
-    "palette": {
-      "primary": "#28315f",
-      "secondary": "#b5b8ff",
-      "ink": "#0d1020"
-    },
-    "series": "core",
-    "artUrl": "/cards/core/iphareth.png"
-  },
-  {
-    "id": "chayliel",
-    "name": "Chayliel",
-    "collectorNumber": "CORE-036",
-    "rarity": "LEGENDARY",
-    "tier": 8,
-    "affinity": "Daeva",
-    "sides": {
-      "top": 9,
-      "right": 7,
-      "bottom": 5,
-      "left": 9
-    },
-    "lore": "Chayliel buried the sun in his chest and charged pilgrims for dawn.",
-    "palette": {
-      "primary": "#6f2834",
-      "secondary": "#f0b36b",
-      "ink": "#220c10"
-    },
-    "series": "core",
-    "artUrl": "/cards/core/chayliel.png"
   }
 ];
