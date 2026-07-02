@@ -12,6 +12,7 @@ import { useTessera } from "@/lib/client/store";
 export function PvpLobbyScreen() {
   const router = useRouter();
   const {
+    status,
     roomId,
     joinCode,
     setJoinCode,
@@ -25,6 +26,7 @@ export function PvpLobbyScreen() {
     setDuelMode,
     notify,
   } = useTessera();
+  const authed = status === "authenticated";
 
   // Once both seats are filled the server pushes the initial state — enter the duel.
   useEffect(() => {
@@ -57,8 +59,16 @@ export function PvpLobbyScreen() {
         </Badge>
       </header>
 
-      {/* matchmaking */}
-      {searching ? (
+      {/* online play needs a verified identity — the socket server rejects guests */}
+      {!authed ? (
+        <div className="rounded-lg border border-line bg-surface px-4 py-4 text-sm text-content-muted">
+          Sign in on the{" "}
+          <Link href="/profile" className="font-semibold text-accent">
+            Profile
+          </Link>{" "}
+          tab to duel online.
+        </div>
+      ) : searching ? (
         <div className="flex items-center justify-between gap-3 rounded-lg border border-accent/40 bg-accent/10 px-4 py-3">
           <span className="inline-flex items-center gap-2 text-sm font-medium">
             <Loader2 size={16} className="animate-spin text-accent" /> Searching
@@ -74,41 +84,47 @@ export function PvpLobbyScreen() {
         </Button>
       )}
 
-      <div className="flex items-center gap-3 text-xs uppercase tracking-wide text-content-faint">
-        <span className="h-px flex-1 bg-line" /> or play a friend{" "}
-        <span className="h-px flex-1 bg-line" />
-      </div>
+      {authed && (
+        <>
+          <div className="flex items-center gap-3 text-xs uppercase tracking-wide text-content-faint">
+            <span className="h-px flex-1 bg-line" /> or play a friend{" "}
+            <span className="h-px flex-1 bg-line" />
+          </div>
 
-      <div className="grid gap-3 sm:grid-cols-2">
-        <Button
-          variant="primary"
-          size="lg"
-          disabled={searching}
-          onClick={() => {
-            setDuelMode("pvp");
-            void createPvpRoom();
-          }}
-        >
-          <Wifi size={17} /> Create room
-        </Button>
-        <div className="flex gap-2">
-          <Input
-            value={joinCode}
-            onChange={(event) => setJoinCode(event.target.value.toUpperCase())}
-            placeholder="ROOM CODE"
-            className="uppercase"
-          />
-          <Button
-            size="lg"
-            onClick={() => {
-              setDuelMode("pvp");
-              void joinPvpRoom();
-            }}
-          >
-            Join
-          </Button>
-        </div>
-      </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Button
+              variant="primary"
+              size="lg"
+              disabled={searching}
+              onClick={() => {
+                setDuelMode("pvp");
+                void createPvpRoom();
+              }}
+            >
+              <Wifi size={17} /> Create room
+            </Button>
+            <div className="flex gap-2">
+              <Input
+                value={joinCode}
+                onChange={(event) =>
+                  setJoinCode(event.target.value.toUpperCase())
+                }
+                placeholder="ROOM CODE"
+                className="uppercase"
+              />
+              <Button
+                size="lg"
+                onClick={() => {
+                  setDuelMode("pvp");
+                  void joinPvpRoom();
+                }}
+              >
+                Join
+              </Button>
+            </div>
+          </div>
+        </>
+      )}
 
       {roomId && (
         <div className="flex items-center justify-between gap-3 rounded-lg border border-gold/40 bg-gold/10 px-4 py-3">
@@ -116,7 +132,10 @@ export function PvpLobbyScreen() {
             <p className="text-xs uppercase tracking-wide text-content-muted">
               Room code
             </p>
-            <p className="font-display text-xl font-bold tracking-widest text-gold">
+            <p
+              data-testid="room-code"
+              className="font-display text-xl font-bold tracking-widest text-gold"
+            >
               {roomId}
             </p>
           </div>

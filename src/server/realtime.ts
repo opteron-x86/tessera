@@ -1,6 +1,6 @@
 import type { Server as HttpServer } from "node:http";
 import { randomUUID } from "node:crypto";
-import { Server } from "socket.io";
+import { Server, type Socket } from "socket.io";
 import { STARTER_CARD_IDS, SAME_PLUS_RULES, makeDeck } from "../game/content";
 import { applyCommand, createGame } from "../game/engine";
 import type { Deck, GameState, MatchCommand, PlayerSlot } from "../game/types";
@@ -18,6 +18,7 @@ import {
   type AbsenceReason,
   type QueueEntry,
 } from "./matchmaking";
+import { resolveSocketIdentity, type SocketIdentity } from "./socket-auth";
 
 type RoomPlayer = {
   socketId: string;
@@ -53,15 +54,26 @@ export function registerRealtimeServer(server: HttpServer) {
     },
   });
 
+  // Identity is established once per connection from the NextAuth session
+  // cookie on the handshake; pvp handlers never trust client-supplied ids.
+  io.use(async (socket, next) => {
+    try {
+      const identity = await resolveSocketIdentity(socket.request);
+      if (identity) {
+        socket.data.identity = identity;
+      }
+    } catch {
+      // Guests may hold a socket; every pvp action requires an identity.
+    }
+    next();
+  });
+
   io.on("connection", (socket) => {
     socket.on(
       "pvp:create",
-      async (
-        payload: { userId?: string; name?: string },
-        reply: (response: unknown) => void,
-      ) => {
+      async (_payload: unknown, reply: (response: unknown) => void) => {
         try {
-          const userId = requireUserId(payload.userId);
+          const { userId, name } = requireIdentity(socket);
           const roomId = createInviteCode();
           const room: DuelRoom = {
             id: roomId,
@@ -70,7 +82,7 @@ export function registerRealtimeServer(server: HttpServer) {
               one: {
                 socketId: socket.id,
                 userId,
-                name: payload.name ?? "Host",
+                name: name ?? "Host",
                 slot: "one",
                 connected: true,
                 aiControlled: false,
@@ -99,11 +111,11 @@ export function registerRealtimeServer(server: HttpServer) {
     socket.on(
       "pvp:join",
       async (
-        payload: { roomId?: string; userId?: string; name?: string },
+        payload: { roomId?: string },
         reply: (response: unknown) => void,
       ) => {
         try {
-          const userId = requireUserId(payload.userId);
+          const { userId, name } = requireIdentity(socket);
           const room = rooms.get(normalizeRoomId(payload.roomId));
           if (!room) {
             throw new Error("Invite room not found.");
@@ -113,10 +125,14 @@ export function registerRealtimeServer(server: HttpServer) {
             throw new Error("Invite room is already full.");
           }
 
+          if (room.players.one?.userId === userId) {
+            throw new Error("You are already seated in this room.");
+          }
+
           room.players.two = {
             socketId: socket.id,
             userId,
-            name: payload.name ?? "Challenger",
+            name: name ?? "Challenger",
             slot: "two",
             connected: true,
             aiControlled: false,
@@ -149,12 +165,9 @@ export function registerRealtimeServer(server: HttpServer) {
 
     socket.on(
       "pvp:queue",
-      async (
-        payload: { userId?: string; name?: string },
-        reply: (response: unknown) => void,
-      ) => {
+      async (_payload: unknown, reply: (response: unknown) => void) => {
         try {
-          const userId = requireUserId(payload.userId);
+          const { userId, name } = requireIdentity(socket);
           if (
             !queue.some(
               (entry) =>
@@ -164,7 +177,7 @@ export function registerRealtimeServer(server: HttpServer) {
             queue.push({
               socketId: socket.id,
               userId,
-              name: payload.name ?? "Wayfarer",
+              name: name ?? "Wayfarer",
             });
           }
           reply({ ok: true });
@@ -186,11 +199,11 @@ export function registerRealtimeServer(server: HttpServer) {
     socket.on(
       "pvp:rejoin",
       async (
-        payload: { roomId?: string; userId?: string },
+        payload: { roomId?: string },
         reply: (response: unknown) => void,
       ) => {
         try {
-          const userId = requireUserId(payload.userId);
+          const { userId } = requireIdentity(socket);
           const room = rooms.get(normalizeRoomId(payload.roomId));
           if (!room) {
             throw new Error("Room not found.");
@@ -679,7 +692,6 @@ function emitRoom(io: Server, room: DuelRoom) {
 function roomPlayerPayload(player: RoomPlayer) {
   return {
     name: player.name,
-    userId: player.userId,
     connected: player.connected,
     aiControlled: player.aiControlled,
     absenceStrikes: player.absenceStrikes,
@@ -812,12 +824,13 @@ function playerForSocket(room: DuelRoom, socketId: string): RoomPlayer | null {
   );
 }
 
-function requireUserId(userId: string | undefined): string {
-  if (!userId) {
-    throw new Error("A signed-in user id is required.");
+function requireIdentity(socket: Socket): SocketIdentity {
+  const identity = socket.data.identity as SocketIdentity | undefined;
+  if (!identity) {
+    throw new Error("Sign in to play PvP.");
   }
 
-  return userId;
+  return identity;
 }
 
 function normalizeRoomId(roomId: string | undefined): string {

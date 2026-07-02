@@ -108,7 +108,6 @@ const PVP_STORAGE_KEY = "tessera:pvp";
 type PersistedPvp = { roomId: string; slot: PlayerSlot };
 type PvpRoomPlayer = {
   name: string;
-  userId: string;
   connected: boolean;
   aiControlled: boolean;
   absenceStrikes: number;
@@ -227,7 +226,6 @@ function useStoreValue() {
   const roomIdRef = useRef("");
   const pvpStateRef = useRef<GameState | null>(null);
   const pvpSlotRef = useRef<PlayerSlot | null>(null);
-  const userIdRef = useRef("");
 
   const ownedCardsRaw: SnapshotCard[] = snapshot?.cards ?? localOneDeck.cards;
   const ownedCards = useMemo(
@@ -317,11 +315,6 @@ function useStoreValue() {
   useEffect(() => {
     roomIdRef.current = roomId;
   }, [roomId]);
-
-  const currentUserId = session?.user?.id ?? `local-${loginName}`;
-  useEffect(() => {
-    userIdRef.current = currentUserId;
-  }, [currentUserId]);
 
   const rememberPvpSession = useCallback((slot: PlayerSlot | null) => {
     pvpSlotRef.current = slot;
@@ -730,11 +723,10 @@ function useStoreValue() {
       // Resume an interrupted match after a transient drop or a page refresh.
       socket.on("connect", () => {
         const roomId = roomIdRef.current;
-        const userId = userIdRef.current;
-        if (!roomId || !userId || pvpStateRef.current?.phase === "complete") {
+        if (!roomId || pvpStateRef.current?.phase === "complete") {
           return;
         }
-        void emitWithAck(socket, "pvp:rejoin", { roomId, userId }).then(
+        void emitWithAck(socket, "pvp:rejoin", { roomId }).then(
           (ack) => {
             if (!ack.ok) {
               clearPvpSession();
@@ -796,10 +788,7 @@ function useStoreValue() {
   }, [closeLocalDuelSession, closePvpSession, pvpState, roomId]);
 
   const createPvpRoom = useCallback(async () => {
-    const ack = await emitWithAck(getSocket(), "pvp:create", {
-      userId: currentUserId,
-      name: session?.user?.name ?? loginName,
-    });
+    const ack = await emitWithAck(getSocket(), "pvp:create", {});
     if (!ack.ok) {
       notify(ack.error ?? "Room creation failed.", "danger");
       return;
@@ -812,20 +801,11 @@ function useStoreValue() {
     setPvpTurnEndsAt(null);
     rememberPvpSession(ack.slot ?? "one");
     notify(`Room ${ack.roomId} created.`, "success");
-  }, [
-    getSocket,
-    currentUserId,
-    session,
-    loginName,
-    notify,
-    rememberPvpSession,
-  ]);
+  }, [getSocket, notify, rememberPvpSession]);
 
   const joinPvpRoom = useCallback(async () => {
     const ack = await emitWithAck(getSocket(), "pvp:join", {
       roomId: joinCode,
-      userId: currentUserId,
-      name: session?.user?.name ?? loginName,
     });
     if (!ack.ok) {
       notify(ack.error ?? "Join failed.", "danger");
@@ -839,28 +819,17 @@ function useStoreValue() {
     setPvpTurnEndsAt(ack.turnEndsAt ?? null);
     setDuelMode("pvp");
     rememberPvpSession(ack.slot ?? "two");
-  }, [
-    getSocket,
-    joinCode,
-    currentUserId,
-    session,
-    loginName,
-    notify,
-    rememberPvpSession,
-  ]);
+  }, [getSocket, joinCode, notify, rememberPvpSession]);
 
   const queueMatch = useCallback(async () => {
     setDuelMode("pvp");
     setSearching(true);
-    const ack = await emitWithAck(getSocket(), "pvp:queue", {
-      userId: currentUserId,
-      name: session?.user?.name ?? loginName,
-    });
+    const ack = await emitWithAck(getSocket(), "pvp:queue", {});
     if (!ack.ok) {
       setSearching(false);
       notify(ack.error ?? "Could not join the queue.", "danger");
     }
-  }, [getSocket, currentUserId, session, loginName, notify]);
+  }, [getSocket, notify]);
 
   const cancelQueue = useCallback(() => {
     setSearching(false);
