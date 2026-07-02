@@ -1,6 +1,6 @@
 # Tessera
 
-Tessera is a greenfield TypeScript card game inspired by 3x3, four-sided tactical capture duels. This repo contains the first vertical slice: a pure deterministic rules engine, a Next.js dashboard, seeded lore-card placeholders, Prisma/PostgreSQL models, Auth.js login, economy endpoints, PvE play, and Socket.IO invite-room PvP.
+Tessera is a greenfield TypeScript card game inspired by 3x3, four-sided tactical capture duels.
 
 ## Stack
 
@@ -29,17 +29,3 @@ The default seeded login is `player@tessera.local`.
 - `pnpm test`: deterministic engine and contract tests
 - `pnpm e2e`: browser smoke tests
 - `pnpm db:seed`: card catalog, booster, PvE opponents, and demo player
-
-## Card Library
-
-Cards are authored in YAML under `content/cards/`. Each card has a `series`, `collectorNumber`, `rarity`, numeric power `tier`, sides, lore, palette, and optional art URL. Set-local art lives beside the content in `content/cards/<series>/<card-id>.jpg` or another supported image format (`.jpeg`, `.png`, `.webp`, `.svg`); when `artUrl` is omitted, the generator uses that file automatically and copies it to `public/cards/<series>/`. The app reads generated TypeScript at `src/game/content.generated.ts`; edit the YAML source, then run `pnpm content:generate` or any command that already regenerates content (`pnpm dev`, `pnpm build`, `pnpm db:seed`).
-
-## Implemented Slice
-
-- Core 3x3 board and exactly-five-card deck contract
-- Directional capture, Open, Same, Plus, and Combo rules
-- Placeholder lore card catalog and local SVG card art
-- PvE opponent definitions with rule sets and rewards
-- Collection, deck builder, shop, booster opening, and transmutation UI/API paths
-- Invite-code PvP rooms with server-authoritative move validation
-- Prisma models for future upgrades, tournaments, cosmetics, and paid entitlements
