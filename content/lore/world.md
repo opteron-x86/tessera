@@ -1,9 +1,5 @@
 # Tessera - World Lore
 
-This is the setting hub. It covers the core premise, the Waning, the Spellbreak, broad Graveland mechanics, source bias, and links to companion lore files.
-
----
-
 ## The World
 
 Tessera is a declining post-Spellbreak world. Merata is the current center of civilization: human kingdoms, diminished ancient peoples, ruins, frontier regions, and places where reality remains damaged.
