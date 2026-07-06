@@ -15,7 +15,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 1,
       "left": 4
     },
-    "lore": "Nothing here...",
+    "lore": "The hunters who tracked its mother never came back. The whelp they found at the den was smaller — but no less certain of its hunger.",
     "palette": {
       "primary": "#b64b39",
       "secondary": "#f4b66b",
@@ -37,7 +37,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 5,
       "left": 1
     },
-    "lore": "Nothing here...",
+    "lore": "By the time you see one, you're already surrounded.",
     "palette": {
       "primary": "#3f4f55",
       "secondary": "#b8c7c9",
@@ -59,7 +59,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 1,
       "left": 2
     },
-    "lore": "Nothing here...",
+    "lore": "Isenfall hunters measure a hard winter by how close the rhinos come to the settlement walls.",
     "palette": {
       "primary": "#66717a",
       "secondary": "#d1c5ad",
@@ -81,7 +81,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 3,
       "left": 5
     },
-    "lore": "Nothing here...",
+    "lore": "It won't follow your orders. It will follow its maker's, if they're still alive.",
     "palette": {
       "primary": "#5f6f78",
       "secondary": "#c7d2d8",
@@ -103,7 +103,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 1,
       "left": 1
     },
-    "lore": "Nothing here...",
+    "lore": "It comes as a light in the dark. By the time you realize it isn't a firefly, you've already let it in.",
     "palette": {
       "primary": "#7f3f45",
       "secondary": "#f0a05d",
@@ -125,7 +125,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 4,
       "left": 1
     },
-    "lore": "Nothing here...",
+    "lore": "Larger than a horse, faster than you'd expect, and entirely indifferent to what it steps on.",
     "palette": {
       "primary": "#87362e",
       "secondary": "#d99450",
@@ -147,7 +147,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 4,
       "left": 4
     },
-    "lore": "Nothing here...",
+    "lore": "The Sehrati warn: don't sleep on open sand. The areneid nests deep, but it hunts at the surface.",
     "palette": {
       "primary": "#315c95",
       "secondary": "#bad7ff",
@@ -169,7 +169,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 4,
       "left": 3
     },
-    "lore": "Nothing here...",
+    "lore": "It doesn't know it's dead. That's what makes it dangerous — it keeps trying.",
     "palette": {
       "primary": "#49642e",
       "secondary": "#d7c16f",
@@ -191,7 +191,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 2,
       "left": 6
     },
-    "lore": "Nothing here...",
+    "lore": "Three thousand years and the bones still hold. Whatever purpose animated them didn't last as long.",
     "palette": {
       "primary": "#6f6658",
       "secondary": "#e2d3ac",
@@ -213,7 +213,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 2,
       "left": 1
     },
-    "lore": "Nothing here...",
+    "lore": "Even the squonk mourns what it's become.",
     "palette": {
       "primary": "#4d3358",
       "secondary": "#d8a7cf",
@@ -235,7 +235,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 1,
       "left": 5
     },
-    "lore": "Nothing here...",
+    "lore": "The ruins don't care who you were before you went in.",
     "palette": {
       "primary": "#6b5232",
       "secondary": "#d9bd75",
@@ -257,7 +257,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 4,
       "left": 2
     },
-    "lore": "Nothing here...",
+    "lore": "Velmis claims no direct hand in the plague rats. Scholars at Tindaire find this unpersuasive.",
     "palette": {
       "primary": "#3d5b3a",
       "secondary": "#bccb6b",
@@ -279,7 +279,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 4,
       "left": 3
     },
-    "lore": "Nothing here...",
+    "lore": "In Cassidor, the unlicensed ones work the river docks. In Loneridge, they work everywhere.",
     "palette": {
       "primary": "#5a2e36",
       "secondary": "#d1836f",
@@ -301,7 +301,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 1,
       "left": 1
     },
-    "lore": "Nothing here...",
+    "lore": "She has read every surviving account of the Spellbreak. She has drawn no conclusions she would share with you.",
     "palette": {
       "primary": "#40325f",
       "secondary": "#c8b6ff",
@@ -323,7 +323,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 3,
       "left": 3
     },
-    "lore": "Nothing here...",
+    "lore": "The Tipsy Wyvern has been in three different cities. The bar fights follow it.",
     "palette": {
       "primary": "#40325f",
       "secondary": "#c8b6ff",
@@ -345,7 +345,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 1,
       "left": 3
     },
-    "lore": "Nothing here...",
+    "lore": "The mask isn't a disguise. It's a different self, worn for a different purpose.",
     "palette": {
       "primary": "#40325f",
       "secondary": "#c8b6ff",
@@ -367,7 +367,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 5,
       "left": 5
     },
-    "lore": "Nothing here...",
+    "lore": "It remembers being hungry. Whether it remembers anything else depends on how long it's been here.",
     "palette": {
       "primary": "#2a284a",
       "secondary": "#c08cff",
@@ -389,7 +389,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 1,
       "left": 3
     },
-    "lore": "Nothing here...",
+    "lore": "The furnace still stands. He still works it. Some days he tells himself he can feel the old heat.",
     "palette": {
       "primary": "#6d3c2f",
       "secondary": "#e0a35a",
@@ -411,7 +411,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 1,
       "left": 6
     },
-    "lore": "Nothing here...",
+    "lore": "The Velvet Thorn has operated in Cassidor for two centuries. Empires come and go. Useful people remain.",
     "palette": {
       "primary": "#6d3c2f",
       "secondary": "#e0a35a",
@@ -433,7 +433,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 2,
       "left": 3
     },
-    "lore": "Nothing here...",
+    "lore": "The Myrathi use them as living landmarks. If you see a roc circling, you've already sailed into their waters.",
     "palette": {
       "primary": "#4f6277",
       "secondary": "#d7f0f4",
@@ -455,7 +455,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 3,
       "left": 4
     },
-    "lore": "Nothing here...",
+    "lore": "It's not the troll you should fear. It's whether the troll has already claimed the road you're standing on.",
     "palette": {
       "primary": "#3f5d35",
       "secondary": "#b8c779",
@@ -477,7 +477,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 6,
       "left": 3
     },
-    "lore": "Nothing here...",
+    "lore": "The moonwell shows what is, not what you wish. The Alnathi who dive them have learned to tell the difference.",
     "palette": {
       "primary": "#2e6072",
       "secondary": "#a8e7e1",
@@ -499,7 +499,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 5,
       "left": 3
     },
-    "lore": "Nothing here...",
+    "lore": "Three thousand years of decline, and still they dress as if Aevorn might return tomorrow.",
     "palette": {
       "primary": "#4a3470",
       "secondary": "#d8c3ff",
@@ -521,7 +521,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 2,
       "left": 5
     },
-    "lore": "Nothing here...",
+    "lore": "The Alnathi have words for what it was before. The Kynathi pretend they don't.",
     "palette": {
       "primary": "#405c38",
       "secondary": "#aecf7a",
@@ -543,7 +543,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 3,
       "left": 5
     },
-    "lore": "Nothing here...",
+    "lore": "The imp doesn't serve. It follows, for now, whatever it finds interesting.",
     "palette": {
       "primary": "#783345",
       "secondary": "#f08061",
@@ -565,7 +565,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 5,
       "left": 2
     },
-    "lore": "Nothing here...",
+    "lore": "Red ones burn. Blue ones freeze. Both find the situation funnier than you do.",
     "palette": {
       "primary": "#2f4d82",
       "secondary": "#9ec8ff",
@@ -587,7 +587,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 5,
       "left": 2
     },
-    "lore": "Nothing here...",
+    "lore": "The Blightlands have produced stranger things than the skraal. None of them have been friendlier.",
     "palette": {
       "primary": "#68404f",
       "secondary": "#e2a0a8",
@@ -609,7 +609,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 2,
       "left": 4
     },
-    "lore": "Nothing here...",
+    "lore": "Jakanu taught that the best strike is the one your enemy doesn't see coming because they're too busy laughing.",
     "palette": {
       "primary": "#68404f",
       "secondary": "#e2a0a8",
@@ -631,7 +631,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 5,
       "left": 3
     },
-    "lore": "Nothing here...",
+    "lore": "It was built to carry something. The something is gone. It still carries the weight.",
     "palette": {
       "primary": "#58616f",
       "secondary": "#d7d0c5",
@@ -653,7 +653,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 3,
       "left": 4
     },
-    "lore": "Nothing here...",
+    "lore": "She doesn't raid for wealth. The Shattered Isles teach that stillness is death.",
     "palette": {
       "primary": "#245f75",
       "secondary": "#7dd3fc",
@@ -675,7 +675,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 2,
       "left": 5
     },
-    "lore": "Nothing here...",
+    "lore": "Everyone who studies fire magic learns to respect it first. The ones who don't don't reach the second lesson.",
     "palette": {
       "primary": "#8a2e27",
       "secondary": "#f0b05e",
@@ -697,7 +697,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 5,
       "left": 4
     },
-    "lore": "Nothing here...",
+    "lore": "She doesn't ask the tide to change. She tells it.",
     "palette": {
       "primary": "#1e6677",
       "secondary": "#93e4e7",
@@ -719,7 +719,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 4,
       "left": 6
     },
-    "lore": "Nothing here...",
+    "lore": "Fighting a Reshai in the Pritani canopy is like fighting the jungle itself. The jungle knows every branch.",
     "palette": {
       "primary": "#1e6677",
       "secondary": "#93e4e7",
@@ -741,7 +741,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 3,
       "left": 5
     },
-    "lore": "Nothing here...",
+    "lore": "It arrives before the disaster. Not to warn you — it simply finds disaster interesting.",
     "palette": {
       "primary": "#32244d",
       "secondary": "#c39cff",
@@ -763,7 +763,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 6,
       "left": 5
     },
-    "lore": "Nothing here...",
+    "lore": "No one knows what it was before. It may have been several things.",
     "palette": {
       "primary": "#6e3544",
       "secondary": "#e78c9a",
@@ -785,7 +785,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 4,
       "left": 6
     },
-    "lore": "Nothing here...",
+    "lore": "He does not call himself emperor. He says the title is too large for what it's become. His enemies are still deciding if that's wisdom or weakness.",
     "palette": {
       "primary": "#6c4a25",
       "secondary": "#e0bd69",
@@ -807,7 +807,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
       "bottom": 6,
       "left": 3
     },
-    "lore": "Nothing here...",
+    "lore": "It doesn't belong here. It knows it doesn't belong here. It doesn't seem troubled by this.",
     "palette": {
       "primary": "#33435f",
       "secondary": "#a8c6ff",
