@@ -158,4 +158,4 @@ And beneath all four, the fact no human knows: theirs is the attention that move
 
 ---
 
-*Companion to world.md, nerebine-codex.md, and doctrine-of-the-severed.md. Proper names herein (the Pactorate, the Kindled, Vellin, the Kingsbarrows, and kin) fall under the standing renaming license.*
+*Companion to world.md, nerebine-codex.md, severance-doctrine.md, and metaphysics-glossary.md. Proper names herein (the Pactorate, the Kindled, Vellin, the Kingsbarrows, and kin) fall under the standing renaming license.*

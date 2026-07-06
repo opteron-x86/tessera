@@ -132,4 +132,4 @@ Within Natari itself, the pressure runs the other way: a rigorist faction holds 
 
 ---
 
-*Companion to world.md and nerebine-codex.md.*
+*Companion to world.md, nerebine-codex.md, and metaphysics-glossary.md.*
