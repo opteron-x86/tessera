@@ -6,9 +6,7 @@
 
 **The Merathine Empire** is a human-founded empire in Merata.
 
-
 **The Maren River** is the primary river system of Merata — a branching network draining much of the continent's interior, fanning into a fertile delta at Cassidor.
-
 
 **Lorindale** sits in the fertile heartland south of the Maren.
 
