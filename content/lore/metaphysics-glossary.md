@@ -47,11 +47,3 @@ The terms below are the common mechanics that let the setting's religions, magic
 **Return** — The normal hoped-for completion of mortal life: death as passage back along the weave, to the divine, the ancestors, the household dead, the harbor, or whatever a tradition understands as home. The fact that traditions disagree does not make return unreal; it means the routes are poorly understood.
 
 **Severance** — Being cut from proper participation and return. The Kynathi use the term theologically for Daevic contact; vampires embody a broken form of it; the Graveland is populated by powers severed from living worlds. Severance is not simple death. It is disconnection that keeps wanting.
-
----
-
-## Guardrails
-
-These mechanics are real, but no culture owns the explanation. The Codex, the Doctrine, the Courtesies, the Pactorate, the Reading, mask-practice, chamber-rites, and other traditions are all partial disciplines built around the same world. Each should be allowed to know at least one true thing the others miss.
-
-Do not reduce every mystery to the glossary. The terms are load-bearing grammar, not final answers. They should clarify why institutions work, why taboos matter, and why bargains are dangerous, while leaving room for local practice to be older, stranger, and more competent than theory.

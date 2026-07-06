@@ -8,19 +8,19 @@
 
 **Merata** — The large central continent and primary setting of Tessera. Merata bears the scars of the Spellbreak in visible and invisible ways: rifts, dead zones, places where magic behaves strangely, and ruins from what was clearly once something greater.
 
-**Arlengh** — The northern continent, sealed since the Spellbreak behind permanent storm and ice. Before the catastrophe it was inhabited — by the human peoples whose descendants settled Isenfall generations before the crossing closed, and by the giants whose orphaned hulks still circle the world's oceans. What Arlengh is now, no one knows: whether its peoples warred and annihilated one another, whether the ice simply took them, or whether something survives behind the storms. No expedition has returned in living memory, and most never set out. Isenfall keeps the homeland as myth; the Sea Giants, presumably, keep it as something else.
+**Arlengh** — The northern continent, sealed since the Spellbreak behind permanent storm and ice. Before the catastrophe it was inhabited — by the human peoples whose descendants settled Isenfall generations before the crossing closed, and by the giants whose orphaned hulks still circle the world's oceans. What Arlengh is now, no one knows: whether its peoples warred and annihilated one another, whether the ice simply took them, or whether something survives behind the storms. No expedition has returned in living memory, and most never set out.
 
 **Isenfall** — The northern tundra and taiga region of Merata. Its people are culturally distinct from southern humans, descended from Arlengh settlers who crossed generations before the Spellbreak — a span that has itself become myth, since the catastrophe sealed the crossing behind them. Indigenous tribes predating those settlers have largely dwindled.
 
-**Teutania** — The northwestern highlands of Merata, between Isenfall and the main human heartland. A distinct highland culture — martial, insular, proud — that has maintained independence from the Merathine Empire more through terrain than politics. Teutania has never been conquered — not by the Hegemony, not by the empire, not by anyone since — and the fact is the spine of highland identity, out of all proportion to the region's strategic weight.
+**Teutania** — The northwestern highlands of Merata, between Isenfall and the main human heartland. A distinct highland culture — martial, insular, proud — that has maintained independence from the Merathine Empire more through terrain than politics.
 
 **Pritani Jungle** — A vast jungle in southeastern Merata, home to the Reshai. Dense, ancient, and largely unmapped by outside peoples.
 
 **Sahridi Desert** — A large desert believed to have been formed by the Spellbreak. The region was something else before — what the buried Vahari ruins suggest was a sophisticated civilization. The Sehrati are its current inhabitants.
 
-**Cassidor** — The Merathine imperial capital, situated at the fertile delta of the Maren river. The greatest human city Merata has known; now grand but hollowed, its palaces and institutions still standing while its population has declined and its political authority has eroded. The emperor still holds court here. Real power is contested between Lorindale and Seradon factions at the imperial court. Cassidor's wealth derives from its position at the Maren delta — even a diminished empire controls an enormous amount of trade simply by existing at the mouth of Merata's primary river system.
+**Cassidor** — The Merathine imperial capital, situated at the fertile delta of the Maren river.
 
-**Tindaire** — Home to a massive college and library; the nearest thing Merata has to a neutral institution — and neutrality, at Tindaire, is not a virtue but a product, manufactured daily at great expense. Founded under Merathine patronage during the imperial peak, the college outgrew its patron by making itself indispensable to everyone: every crown endows chairs, every people sends scholars, and every power on the continent has deposited things in Tindaire's vaults that it wants kept, and kept sealed — the college's discretion being the collateral that guarantees its independence. The library holds the largest collection of pre-Spellbreak material still extant, the Tindaire Recension of the Nerebine Codex, the anomaly records, and sealed deposits its librarians catalogue but may not open. Its faculties shelter what other powers exile — Kynathi Namers who cannot go home, riftborn scholars, Alnathi correspondents of the Vigil — which is both its glory and the standing list of reasons half the continent distrusts it. Its newest and most delicate undertaking is the **Testimony**: a project to record the memories of the last living witnesses of the world before, over the Dominion's furious objection — Natari holds that its elders' memories are not Tindaire's to take, and more than one dying witness has defected north to be remembered on their own terms. Tindaire is where the competing theories of the Spellbreak are most seriously debated; it is honest with no one, useful to everyone, and it has outlived one empire already.
+**Tindaire** — Home to a college and library.
 
 **Lorindale** — A prosperous human kingdom in the fertile heartland south of the Maren (see [Geopolitics](geopolitics.md)).
 
@@ -28,15 +28,15 @@
 
 **Vrasar** — A northeastern human kingdom, rugged in terrain and culture; effectively where the Merathine Empire's reach ends, and now the frontier facing the Banner-Sworn (see [Geopolitics](geopolitics.md)).
 
-**The Vezhan Steppe** — The eastern grasslands beyond Vrasar's marches, running past the edge of any imperial map. Home to horse clans human and made alike, now united for the first time in memory under a single Khal as the Banner-Sworn (see [Geopolitics](geopolitics.md)). The steppe's own history, spirit-traditions, and the Khal's identity remain to be developed.
+**The Vezhan Steppe** — The eastern grasslands beyond Vrasar's marches, running past the edge of any imperial map. Home to horse clans united for the first time in memory under a single Khal as the Banner-Sworn (see [Geopolitics](geopolitics.md)).
 
 **Juna** — A northern kingdom between the Dyrathi mountains and the tundra of Isenfall; warden of Illuvinel's approaches (see [Geopolitics](geopolitics.md)).
 
-**Natari** — A mostly-intact pre-Spellbreak city on a dramatic clifftop of the southern coast, primarily inhabited by Kynathi. Enforces strict edicts to maintain ancient Kynathi tradition and high culture. Hostile to non-elves; dismissive of other *-athi* peoples. Once a center of Kynathi maritime trade, its southern heritage has been diminished as the sea below has grown more dangerous with Myrathi expansion. Capital of the Natari Dominion and the living heart of what remains of Kynathi civilization — precious and suffocating in equal measure. Natari's **Edict of Unnaming** makes the speaking, writing, or possession of Daevic names a crime within its walls; copies of the Nerebine Codex are contraband of the first order, and are burned in a public rite of erasure conducted without commentary, since even denunciation is attention.
+**Natari** — A mostly-intact pre-Spellbreak city on the southern coast, primarily inhabited by Kynathi. Enforces strict edicts to maintain ancient Kynathi tradition and high culture. Capital of the Natari Dominion and the living heart of what remains of Kynathi civilization.
 
-**Lethengarde** — A deserted city in the northeast of Merata, and the great cautionary tale of post-Spellbreak scholarship. Its observatory predates the catastrophe — built under Seranthi's patronage in the Hegemony's age, when its instruments read the stars for fate. After the Spellbreak, the scholars who inherited it — a human-led college with members of most peoples — turned the instruments from the sky to the wounds: rifts, leylines, the spaces between planes, and at last the Graveland itself. It was, in effect, the great non-elven attempt at the Grave-Sight, pursued by lens and mirror instead of trance, and its northeastern isolation let the work run unsupervised for generations. Roughly two centuries ago, it stopped. The city did not die; it *emptied* — the only account is a supply-carter's, who arrived to open doors, set tables, and no one at all. No bodies were ever found. Whatever happened is called the Lethengarde Incident, and the correspondence the observatory had been sending to Tindaire — the **Lethengarde Letters**, increasingly strange in their final years — simply cuts off mid-series. Strange lights are still reported over the observatory, which may mean the instruments are still running; lingering near the city is said to produce madness, and every power that has quietly attempted a survey has quietly stopped.
+**Lethengarde** — A deserted city in the northeast of Merata.
 
-**The Shattered Isles** — The center of Myrathi civilization, an archipelago in the Orathian Sea. The name suggests some catastrophe in their past, the details of which are not shared with outsiders. Among the few things outsiders claim to know of Myrathi tradition is that the sea began to speak at the Shattering, and that the Reading is the covenant that has kept the Myrathi alive since — though this, like everything about the Isles, arrives third-hand. What can be said with some confidence is that the Shattering predates the Spellbreak: whatever broke the Isles was not the breaking of the world, and the Reading is older than the silence of the gods.
+**The Shattered Isles** — The center of Myrathi civilization, an archipelago in the Orathian Sea.
 
 **The Orathian Sea** — The body of water home to the Myrathi and, occasionally, to Sea Giants. Increasingly dangerous for other seafarers.
 
@@ -56,38 +56,4 @@ Nerebyasca admits outsiders, which surprises those who finally see it. Petitione
 
 **Isrannaes** — A ruin carved directly into a mountainside — corridors and chambers cut from and reinforced within living rock, and built *late*: the stonework dates to the Waning, and it was made in a hurry, by a civilization that did not hurry. Abandoned since the Spellbreak. Its location makes it physically difficult to reach; the deep interior chambers are sealed, whether by the catastrophe or by design, and many have never been entered in the centuries since. What the Hegemony was building in its frightened final age — a refuge, an instrument, a vault, or something else — is unknown, and whether Isrannaes was meant to survive the Spellbreak or to prevent it is the kind of question Tindaire assigns to scholars it wants to lose.
 
-**Loneridge** — A frontier settlement built around a contained Spellbreak rift; originally a mining town, later a ghost town, now the unlikeliest boomtown in Merata. Some sixty years ago a rift opened near the settlement and began consuming the surrounding landscape; a mixed-race party of five contained it (see *The Rift-Breakers of Loneridge*), and the containment altered the land, revealing access to previously undiscovered pre-Spellbreak ruins beneath. The rift remains — smaller, guarded, partially understood, still occasionally producing incursions — and the ruins keep yielding new chambers.
-
-Everything else follows from those two facts. The Merathine licensing office technically requires documentation for any artifact removed from the ruins; it is four clerks, one soldier, and a stamp — yet the stamp still matters, because imperial paper still means something in Cassidor courtrooms, and the difference between licensed and unlicensed "Loneridge goods" is the difference between an inheritance and a hanging offense in three kingdoms. The black market thrives accordingly, in Cassidor, Seradon, and beyond. Loneridge also holds the largest riftborn community in Merata — the rift-touched gravitate to the one town where they are unremarkable — alongside imperial garrison soldiers, adventuring companies, priests of several traditions, smugglers, Vigil correspondents, criminal organizations, and scholars, all sharing the same taverns and competing for the same chambers. The names of the five founders are carved into the stone arch above the central well. Of the five, the three short-lived members are decades dead; the two elven members, Varenthil and Dhorash, may yet live. Neither has been seen in years, and Loneridge prefers not to know.
-
----
-
-## Myths & Legends
-
-### The Rift-Breakers of Loneridge
-
-Five adventurers of different peoples — for reasons history has made murky — approached the Loneridge rift when it was open and actively consuming the surrounding landscape. Their names are carved above Loneridge's central well: **Caldren** (Human, Teutanian), **Varenthil** (Kynathi), **Dhorash** (Alnathi), **Kovrul** (Dyrathi), **Vikanu** (Reshai).
-
-What the accounts agree on: Varenthil designed a magical containment that required something from each member of the party to complete. Kovrul built the physical anchor structure that still stands, reinforced over the years by Loneridge's residents. Caldren held the perimeter while the work was done. Vikanu found the passage into the rift's interior that no one else had located. What Dhorash did in the final moments is described differently in every version — in some accounts it was an act of communication with whatever was on the other side; in others it was sacrifice; in others it was simply the right thing said at the right moment by someone who understood what they were dealing with.
-
-The rift did not close. The adventurers apparently did not intend it to. Caldren's reported response, when asked why they hadn't sealed it: *"You don't seal a door you might need to use."* Whether this was wisdom or hubris is still debated in Loneridge's taverns, usually by people who have never gone near the rift themselves.
-
----
-
-## Locations Design Notes
-
-*Out-of-world reference: what is true, what is belief, and what should stay unresolved.*
-
-**True:** Merata is the primary current setting. Arlengh is sealed behind storm and ice. Cassidor, Tindaire, Natari, Nerebyasca, Loneridge, Illuvinel, Arhebel, Isrannaes, Gloamwood, the Blightlands, the Shattered Isles, the Orathian Sea, the Sahridi Desert, Teutania, Isenfall, Juna, Vrasar, Lorindale, Seradon, and the Vezhan Steppe all exist as described at broad-reference level.
-
-**Belief, not established reality:** Outsider claims about the Shattered Isles and the Myrathi Reading. Isenfall beliefs about Arlengh. Rumors about Lethengarde's lights and madness. Any single theory of what Arhebel, Isrannaes, or the deepest Vahari chambers were for. Tavern certainties about the Rift-Breakers' motives.
-
-**Deliberately unresolved:** What survives, if anything, in Arlengh. What happened at Lethengarde. What Arhebel's deepest levels predate. Whether Isrannaes was refuge, instrument, vault, weapon, repair attempt, or failure. What the Loneridge rift remains open for. Whether the harbored dead of Nerebyasca can be reached.
-
-**Open hooks:** Tindaire's sealed deposits. Lethengarde Letters. Juna's relic licensing. Dominion attempts to recover or sabotage Illuvinel expeditions. Loneridge artifact law and black markets. A lower Arhebel level that is not Kynathi. An Isrannaes chamber opened by people who misunderstand what it was made to do. Petitioners seeking berth at Nerebyasca.
-
-**Guardrails:** Locations should be more than backdrops. Each major place should express at least one setting mechanic through law, custom, danger, economy, or architecture. Ruins should eventually have histories older than the catastrophe, not merely be Spellbreak scenery.
-
----
-
-*Companion to [world.md](world.md), [geopolitics.md](geopolitics.md), [peoples.md](peoples.md), and [chronology.md](chronology.md). Proper names of locations and local incidents remain open where the standing renaming license applies.*
+**Loneridge** — A frontier settlement built around a contained Spellbreak rift; originally a mining town, later a ghost town, now the unlikeliest boomtown in Merata.
