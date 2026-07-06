@@ -14,7 +14,7 @@ Use three confidence labels while drafting:
 - **Contested** - True status is unknown in-world, or different traditions explain it differently.
 - **Open** - Needs a creator decision before it becomes canon.
 
-The Spellbreak is year zero for relative dating. Exact year counts should remain provisional until the age of the current era is set.
+The Spellbreak is treated as year zero for relative dating. The current era is **760 AS**: seven hundred and sixty years after the Spellbreak.
 
 ---
 
@@ -108,6 +108,10 @@ These are the current load-bearing assumptions of Tessera.
 
 **Fixed:** The Spellbreak shattered the hidden framework through which the Creators shaped and sustained Tessera.
 
+**Fixed:** In authorial canon, the Spellbreak was a moment: the instant the framework broke.
+
+**Contested:** Because reality was destabilized, surviving sources may describe the event as a cascade, a season of disasters, years of impossible time, repeated days, missing years, or contradictions that cannot all be reconciled.
+
 **Fixed:** It severed the Creators' connection to the world, changed magic, weakened planar boundaries, and left some regions permanently damaged.
 
 **Fixed:** It made contact with the Graveland easier through rifts, dreams, broken leylines, possession, and reckless magic.
@@ -121,8 +125,6 @@ These are the current load-bearing assumptions of Tessera.
 **Fixed:** Sea Giants aboard the great hulks became cut off from Arlengh.
 
 **Fixed:** The event damaged the record, creating room for propaganda, missing archives, altered histories, and sincere theological contradiction.
-
-**Open:** Decide whether the Spellbreak was a single catastrophic moment, a short cascading disaster, or a named period of related failures.
 
 ### 7. The First Aftermath
 
@@ -166,9 +168,11 @@ These are the current load-bearing assumptions of Tessera.
 
 **Contested:** Human successor states disagree about whether they inherited, liberated, repaired, replaced, or avenged the old order.
 
-**Open:** Decide whether the Merathine Empire is still expanding, has plateaued, is declining, or is trying to restore a lost high point.
+**Fixed:** By 760 AS, the Merathine Empire has plateaued and overextended. It remains the strongest human power in Merata, but it can no longer expand or enforce its will everywhere at once.
 
 ### 9. The Current Age
+
+**Fixed:** The present year is **760 AS**.
 
 **Fixed:** Merata is the current center of civilization.
 
@@ -188,7 +192,7 @@ These are the current load-bearing assumptions of Tessera.
 
 **Contested:** Every major power treats the present decline differently: an imperial problem, a theological punishment, a frontier opportunity, a prophecy unfolding, or simply the cost of living after catastrophe.
 
-**Open:** Decide the current date after the Spellbreak. A useful provisional range is several centuries after the event, close enough that the oldest Kynathi may preserve living memory if desired.
+**Fixed:** For humans, the Spellbreak belongs to ancient history. For the oldest Kynathi, select vampires, and other long-lived beings, it may still survive as living memory, though age, trauma, politics, and magical damage make testimony unreliable.
 
 ---
 
@@ -196,12 +200,10 @@ These are the current load-bearing assumptions of Tessera.
 
 These decisions will clarify the next layer of worldbuilding.
 
-1. **Current date:** Is the present within Kynathi living memory of the Spellbreak, or has even that passed into archive and myth?
-3. **Spellbreak duration:** Was it a moment, a cascade, or an era?
-4. **Natari's old role:** Was Natari the Hegemony's capital before the catastrophe or the place that survived well enough to claim continuity?
-5. **Alnathi and Anchorites:** Are their heresies the same, related, or separate?
-6. **Vahari identity:** Were the Vahari human, elder, mixed, non-mortal, or intentionally unknown?
-7. **Merathine origin:** Did the Merathine Empire rise as rebellion, restoration, opportunistic consolidation, anti-Kynathi project, or client-state succession?
-8. **Living witnesses:** Are there still Kynathi, Dyrathi, vampires, or other long-lived beings who personally remember the pre-Spellbreak world?
-9. **Public truth:** Which facts are known to ordinary educated people, and which are restricted to temples, courts, ruins, or suspect scholarship?
-10. **Authorial truth:** Which mysteries should have a private answer, and which should remain unresolved even for the setting bible?
+1. **Natari's old role:** Was Natari the Hegemony's capital before the catastrophe or the place that survived well enough to claim continuity?
+2. **Alnathi and Anchorites:** Are their heresies the same, related, or separate?
+3. **Vahari identity:** Were the Vahari human, elder, mixed, non-mortal, or intentionally unknown?
+4. **Merathine origin:** Did the Merathine Empire rise as rebellion, restoration, opportunistic consolidation, anti-Kynathi project, or client-state succession?
+5. **Living witnesses:** Which Kynathi, Dyrathi, vampires, or other long-lived beings personally remember the pre-Spellbreak world?
+6. **Public truth:** Which facts are known to ordinary educated people, and which are restricted to temples, courts, ruins, or suspect scholarship?
+7. **Authorial truth:** Which mysteries should have a private answer, and which should remain unresolved even for the setting bible?
